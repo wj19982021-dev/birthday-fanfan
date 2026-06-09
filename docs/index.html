@@ -48,12 +48,6 @@
         }
         .screen.active { opacity: 1; visibility: visible; }
 
-        /* Hitbox */
-        .hit {
-            position: absolute; cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         /* Music */
         .music {
             position: absolute; top: 16px; right: 16px; z-index: 100;
@@ -64,12 +58,25 @@
 
         /* ====== Scene 1: 启封 ====== */
         .s1 {
-            background: linear-gradient(180deg, #e8e0d0 0%, var(--paper) 40%, #d4c8b0 100%);
-            align-items: center; justify-content: center;
+            background: linear-gradient(180deg, #d8d0c0 0%, #e8e0d0 30%, var(--paper) 60%, #c8d0c8 100%);
+            align-items: center; justify-content: center; position: relative;
+        }
+        /* 水墨远山 */
+        .s1::before {
+            content: ''; position: absolute; bottom: 25%; left: 0; right: 0; height: 120px;
+            background:
+                radial-gradient(ellipse 100px 80px at 15% 100%, rgba(100,120,100,0.2), transparent),
+                radial-gradient(ellipse 130px 90px at 45% 100%, rgba(100,120,100,0.15), transparent),
+                radial-gradient(ellipse 90px 70px at 75% 100%, rgba(100,120,100,0.12), transparent);
+        }
+        /* 水面 */
+        .s1::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 28%;
+            background: linear-gradient(180deg, transparent, rgba(180,200,190,0.25));
         }
         .s1-title {
             text-align: center; animation: fadeUp 1s ease 0.5s both;
-            padding: 0 32px; margin-top: -60px;
+            padding: 0 32px; margin-top: -60px; position: relative; z-index: 1;
         }
         .s1-title .name { font-size: 20px; color: var(--ink-soft); letter-spacing: 4px; }
         .s1-title h1 { font-size: 48px; color: var(--ink); letter-spacing: 6px; margin: 12px 0; font-weight: 900; }
@@ -79,7 +86,7 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 26px; color: var(--seal-red); font-weight: bold;
             margin-top: 40px; cursor: pointer; transition: all 0.3s ease;
-            animation: fadeIn 1s ease 1s both;
+            animation: fadeIn 1s ease 1s both; position: relative; z-index: 1;
         }
         .s1-seal:active { transform: scale(0.95); }
         .s1-seal.glow { animation: sealGlow 1s ease forwards; }
@@ -91,29 +98,38 @@
         .s1-tip {
             position: absolute; bottom: 10%; left: 0; right: 0; text-align: center;
             font-size: 13px; color: var(--ink-soft); letter-spacing: 3px;
-            animation: fadeIn 1s ease 1.2s both;
+            animation: fadeIn 1s ease 1.2s both; z-index: 1;
         }
         .s1-tip::after {
-            content: '↓ 向上滑动'; display: block; margin-top: 8px; font-size: 12px;
+            content: '↑ 向上滑动开启'; display: block; margin-top: 8px; font-size: 12px;
             animation: bounce 1.5s ease-in-out infinite;
         }
 
         /* ====== Scene 2: 江南 ====== */
         .s2 {
-            background: linear-gradient(180deg, #d4c8b0 0%, var(--mist-blue) 50%, #b0c0b8 100%);
-            padding: 60px 20px 20px;
+            background: linear-gradient(180deg, #c8c0b0 0%, #b8c8c0 40%, #a8b8b0 100%);
+            padding: 60px 20px 20px; position: relative;
+        }
+        /* 水墨晕染 */
+        .s2::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 200px 150px at 80% 20%, rgba(100,120,100,0.1), transparent),
+                radial-gradient(ellipse 150px 200px at 20% 80%, rgba(100,120,100,0.08), transparent);
+            pointer-events: none;
         }
         .willow {
             position: absolute; width: 2px; background: linear-gradient(180deg, var(--green), transparent);
-            opacity: 0.5; transform-origin: top center; animation: sway 4s ease-in-out infinite;
+            opacity: 0.4; transform-origin: top center; animation: sway 4s ease-in-out infinite;
         }
-        .willow:nth-child(1) { left: 15%; height: 120px; }
-        .willow:nth-child(2) { left: 25%; height: 100px; animation-delay: 0.5s; }
-        .willow:nth-child(3) { right: 20%; height: 110px; animation-delay: 1s; }
-        @keyframes sway { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        .willow:nth-child(1) { left: 12%; height: 100px; }
+        .willow:nth-child(2) { left: 22%; height: 80px; animation-delay: 0.5s; }
+        .willow:nth-child(3) { right: 18%; height: 90px; animation-delay: 1s; }
+        @keyframes sway { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
         .s2-text {
             text-align: center; animation: fadeUp 1s ease 0.3s both;
             flex: 1; display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 1;
         }
         .s2-text h2 { font-size: 16px; color: var(--ink); line-height: 2.4; letter-spacing: 2px; font-weight: 400; }
         .ripple {
@@ -122,73 +138,69 @@
             border-radius: 50%; pointer-events: none; animation: rippleExpand 1.5s ease-out forwards;
         }
         @keyframes rippleExpand { 0% { transform: translate(-50%,-50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(3); opacity: 0; } }
-        .s2-cards {
-            display: flex; gap: 10px; padding: 0 8px; margin-bottom: 16px;
-        }
+        .s2-cards { display: flex; gap: 10px; padding: 0 8px; margin-bottom: 12px; position: relative; z-index: 1; }
         .s2-card {
             flex: 1; background: rgba(255,255,255,0.75); backdrop-filter: blur(8px);
             border-radius: 12px; padding: 14px 8px; text-align: center;
-            border: 1px solid rgba(184,145,75,0.2);
-            animation: fadeUp 0.8s ease calc(0.3s * var(--i)) both;
-            cursor: pointer; transition: transform 0.3s ease;
+            border: 1px solid rgba(184,145,75,0.2); cursor: pointer;
+            transition: transform 0.4s ease; opacity: 0; transform: translateY(30px);
         }
+        .s2-card.show { opacity: 1; transform: translateY(0); }
         .s2-card:active { transform: scale(0.97); }
         .s2-card h3 { font-size: 13px; color: var(--ink); margin-bottom: 6px; }
         .s2-card p { font-size: 11px; color: var(--ink-soft); line-height: 1.6; }
-        .s2-arrow {
-            text-align: center; padding: 12px 0; font-size: 13px; color: var(--ink-soft);
-            letter-spacing: 2px; cursor: pointer; animation: fadeIn 1s ease 1s both;
+        .s2-hint {
+            text-align: center; padding: 10px 0; font-size: 12px; color: var(--ink-soft);
+            letter-spacing: 2px; opacity: 0.7; position: relative; z-index: 1;
         }
-        .s2-arrow::after { content: ' ↓'; animation: bounce 1.5s ease-in-out infinite; display: inline-block; }
 
         /* ====== Scene 3: 烟火 ====== */
         .s3 {
-            background: linear-gradient(180deg, #2a3040 0%, #3a4050 50%, #4a5060 100%);
-            padding: 60px 24px 20px; align-items: center;
+            background: linear-gradient(180deg, #252a35 0%, #353a48 50%, #454a58 100%);
+            padding: 60px 24px 20px; align-items: center; position: relative;
         }
         .s3-window {
             position: absolute; top: 8%; left: 50%; transform: translateX(-50%);
-            width: 160px; height: 180px; border: 2px solid rgba(139,115,85,0.3);
-            border-radius: 80px 80px 0 0; overflow: hidden;
+            width: 150px; height: 170px; border: 2px solid rgba(139,115,85,0.3);
+            border-radius: 75px 75px 0 0; overflow: hidden;
         }
         .s3-window::before {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(180deg, #1a2030, #2a3545 60%, rgba(232,201,130,0.15));
+            background: linear-gradient(180deg, #151a25, #253040 60%, rgba(232,201,130,0.12));
         }
         .star {
-            position: absolute; width: 3px; height: 3px; background: #fff;
+            position: absolute; width: 2px; height: 2px; background: #fff;
             border-radius: 50%; animation: twinkle 2s ease-in-out infinite;
         }
         @keyframes twinkle { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
         .s3-lamp {
-            position: absolute; top: 35%; right: 12%; width: 50px; height: 100px;
-            cursor: pointer;
+            position: absolute; top: 32%; right: 10%; width: 45px; height: 90px; cursor: pointer;
         }
         .s3-lamp::before {
             content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            width: 36px; height: 28px; background: var(--gold); border-radius: 0 0 50% 50%;
+            width: 32px; height: 24px; background: var(--gold); border-radius: 0 0 50% 50%;
         }
         .s3-lamp::after {
-            content: ''; position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
-            width: 4px; height: 50px; background: #8b7355;
+            content: ''; position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
+            width: 3px; height: 45px; background: #8b7355;
         }
         .s3-lamp .glow {
-            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
-            width: 100px; height: 100px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(232,201,130,0.4), transparent);
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 90px; height: 90px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(232,201,130,0.35), transparent);
             opacity: 0; transition: opacity 0.5s ease; animation: breathe 3s ease-in-out infinite;
         }
         .s3-lamp.on .glow { opacity: 1; }
         @keyframes breathe { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.1); } }
         .s3-text {
             flex: 1; display: flex; align-items: center; justify-content: center;
-            text-align: center; animation: fadeUp 1s ease 0.3s both;
+            text-align: center; animation: fadeUp 1s ease 0.3s both; position: relative; z-index: 1;
         }
         .s3-text h2 { font-size: 16px; color: #f6efe1; line-height: 2.4; letter-spacing: 2px; font-weight: 400; }
         .s3-tip {
             text-align: center; font-size: 12px; color: rgba(246,239,225,0.7);
             letter-spacing: 2px; padding: 12px 0; cursor: pointer;
-            animation: fadeIn 1s ease 0.8s both;
+            animation: fadeIn 1s ease 0.8s both; position: relative; z-index: 1;
         }
         .s3-bubble {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
@@ -198,24 +210,24 @@
             animation: bubblePop 0.4s ease;
         }
         @keyframes bubblePop { 0% { transform: translate(-50%,-50%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(1); opacity: 1; } }
-        .s3-arrow {
-            text-align: center; padding: 12px 0; font-size: 13px; color: rgba(246,239,225,0.8);
-            letter-spacing: 2px; cursor: pointer; animation: fadeIn 1s ease 1s both;
+        .s3-hint {
+            text-align: center; padding: 10px 0; font-size: 12px; color: rgba(246,239,225,0.6);
+            letter-spacing: 2px; position: relative; z-index: 1;
         }
-        .s3-arrow::after { content: ' ↓'; animation: bounce 1.5s ease-in-out infinite; display: inline-block; }
 
         /* ====== Scene 4: 愿望签 ====== */
         .s4 {
             background: linear-gradient(180deg, var(--paper) 0%, #ede5d5 100%);
-            padding: 60px 16px 20px; align-items: center;
+            padding: 60px 16px 20px; align-items: center; position: relative;
         }
-        .s4-title {
-            text-align: center; animation: fadeUp 1s ease 0.3s both; margin-bottom: 24px;
+        .s4::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 200px 200px at 50% 30%, rgba(184,145,75,0.06), transparent);
+            pointer-events: none;
         }
+        .s4-title { text-align: center; animation: fadeUp 1s ease 0.3s both; margin-bottom: 24px; position: relative; z-index: 1; }
         .s4-title h2 { font-size: 18px; color: var(--ink); letter-spacing: 4px; font-weight: 400; line-height: 1.8; }
-        .s4-tags {
-            display: flex; gap: 8px; justify-content: center; margin-bottom: 24px;
-        }
+        .s4-tags { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; position: relative; z-index: 1; }
         .s4-tag {
             width: 56px; height: 220px; background: linear-gradient(180deg, #f5f0e8, #ede5d5);
             border-radius: 6px; border: 1px solid rgba(184,145,75,0.2);
@@ -240,21 +252,21 @@
             border: 1px solid rgba(184,145,75,0.2); min-height: 100px;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transform: translateY(15px); transition: all 0.4s ease;
+            position: relative; z-index: 1;
         }
         .s4-result.show { opacity: 1; transform: translateY(0); }
         .s4-result h3 { font-size: 18px; color: var(--ink); margin-bottom: 10px; }
         .s4-result p { font-size: 14px; color: var(--ink-soft); line-height: 1.8; }
         .s4-default { font-size: 13px; color: var(--ink-soft); letter-spacing: 2px; }
-        .s4-arrow {
-            text-align: center; padding: 16px 0 0; font-size: 13px; color: var(--ink-soft);
-            letter-spacing: 2px; cursor: pointer; animation: fadeIn 1s ease 1s both;
+        .s4-hint {
+            text-align: center; padding: 16px 0 0; font-size: 12px; color: var(--ink-soft);
+            letter-spacing: 2px; position: relative; z-index: 1;
         }
-        .s4-arrow::after { content: ' ↓'; animation: bounce 1.5s ease-in-out infinite; display: inline-block; }
 
         /* ====== Scene 5: 收信 ====== */
         .s5 {
             background: linear-gradient(180deg, var(--paper) 0%, #e8e0d0 100%);
-            padding: 60px 20px 20px; align-items: center;
+            padding: 60px 20px 20px; align-items: center; position: relative;
         }
         .s5-letter {
             background: #fff; border-radius: 12px; padding: 28px 20px;
@@ -285,13 +297,6 @@
         .s5-final.show { opacity: 1; pointer-events: all; }
         .s5-final h2 { font-size: 28px; color: var(--ink); letter-spacing: 4px; animation: scaleIn 0.8s ease; }
         .s5-final p { font-size: 14px; color: var(--ink-soft); margin-top: 16px; letter-spacing: 3px; animation: fadeUp 0.8s ease 0.3s both; }
-
-        /* Arrow */
-        .arrow {
-            position: absolute; bottom: 4%; left: 50%; transform: translateX(-50%);
-            font-size: 20px; color: var(--ink-soft); opacity: 0.5;
-            animation: bounce 1.5s ease-in-out infinite; cursor: pointer;
-        }
 
         /* Petal */
         .petal {
@@ -340,13 +345,12 @@
                 <div class="s2-text">
                     <h2>愿你依旧喜欢江南的风，<br>喜欢那些慢慢走过的四季，<br>也喜欢那个认真生活的自己。<br><br>有些风景不必赶路，<br>慢慢看，就很好。</h2>
                 </div>
-                <div class="hit" style="top:45%;left:15%;width:70%;height:15%;" onclick="addRipple(this.parentElement)"></div>
                 <div class="s2-cards">
-                    <div class="s2-card" style="--i:0"><h3>长桥风起</h3><p>风过桥头，愿你前路都有温柔相送。</p></div>
-                    <div class="s2-card" style="--i:1"><h3>柳下听风</h3><p>风拂柳枝，愿你心里的事，慢慢被吹轻。</p></div>
-                    <div class="s2-card" style="--i:2"><h3>湖边小晴天</h3><p>寻常日子里，也总有一点点小晴朗。</p></div>
+                    <div class="s2-card" data-delay="0"><h3>长桥风起</h3><p>风过桥头，愿你前路都有温柔相送。</p></div>
+                    <div class="s2-card" data-delay="200"><h3>柳下听风</h3><p>风拂柳枝，愿你心里的事，慢慢被吹轻。</p></div>
+                    <div class="s2-card" data-delay="400"><h3>湖边小晴天</h3><p>寻常日子里，也总有一点点小晴朗。</p></div>
                 </div>
-                <div class="s2-arrow" onclick="goTo(3)">向上滑动，继续翻阅</div>
+                <div class="s2-hint">↑ 向上滑动继续</div>
             </div>
 
             <!-- Screen 3: 烟火 -->
@@ -361,7 +365,7 @@
                     <h2>愿每餐都有滋有味，<br>每个日子都值得期待。<br><br>愿寻常的日子里，<br>总有一两件值得期待的小事。<br><br>好好吃饭，<br>好好睡觉，<br>慢慢开心。</h2>
                 </div>
                 <div class="s3-tip" onclick="showBubble()">悄悄点一下，会有小惊喜哦✨</div>
-                <div class="s3-arrow" onclick="goTo(4)">向上滑动，继续翻阅</div>
+                <div class="s3-hint">↑ 向上滑动继续</div>
             </div>
 
             <!-- Screen 4: 愿望签 -->
@@ -376,7 +380,7 @@
                     <div class="s4-tag" onclick="selectTag(4,this)"><div class="icon">🌸</div><div class="label">做自己</div></div>
                 </div>
                 <div class="s4-result" id="s4Result"><div class="s4-default">轻轻点一枚愿望签</div></div>
-                <div class="s4-arrow" onclick="goTo(5)">向上滑动，继续翻阅</div>
+                <div class="s4-hint">↑ 向上滑动继续</div>
             </div>
 
             <!-- Screen 5: 收信 -->
@@ -399,13 +403,16 @@
     <audio id="bgm" loop src="assets/bgm.mp3"></audio>
 
     <script>
-        // Scale - 自适应宽度
+        let currentScreen = 1;
+        let musicStarted = false;
+        let touchStartY = 0;
+
+        // Scale
         function updateScale() {
             const c = document.getElementById('canvas');
             const w = Math.min(window.innerWidth, 430);
-            const h = window.innerHeight;
             c.style.width = w + 'px';
-            c.style.height = h + 'px';
+            c.style.height = window.innerHeight + 'px';
         }
         updateScale();
         window.addEventListener('resize', updateScale);
@@ -415,14 +422,27 @@
 
         // Go to screen
         function goTo(n) {
+            if (n < 1 || n > 5) return;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen' + n).classList.add('active');
+            currentScreen = n;
+            // 第二页卡片动画
+            if (n === 2) animateCards();
         }
 
-        // Seal
+        // Seal click
         function sealClick(el) {
+            startMusic();
             el.classList.add('glow');
             setTimeout(() => goTo(2), 1000);
+        }
+
+        // Cards animate
+        function animateCards() {
+            const cards = document.querySelectorAll('.s2-card');
+            cards.forEach((card, i) => {
+                setTimeout(() => card.classList.add('show'), 300 + i * 250);
+            });
         }
 
         // Ripple
@@ -468,13 +488,65 @@
         }
 
         // Music
-        let musicOn = false;
+        function startMusic() {
+            if (musicStarted) return;
+            musicStarted = true;
+            const audio = document.getElementById('bgm');
+            audio.play().catch(() => {});
+            document.querySelectorAll('.music').forEach(m => m.textContent = '♪ 音乐：开');
+        }
+
         function toggleMusic(el) {
             const audio = document.getElementById('bgm');
-            musicOn = !musicOn;
-            if (musicOn) { audio.play().catch(() => {}); el.textContent = '♪ 音乐：开'; }
-            else { audio.pause(); el.textContent = '♪ 音乐：关'; }
+            if (audio.paused) {
+                audio.play().catch(() => {});
+                el.textContent = '♪ 音乐：开';
+            } else {
+                audio.pause();
+                el.textContent = '♪ 音乐：关';
+            }
         }
+
+        // 全局上滑导航
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+            if (diff > 50) {
+                // 上滑
+                startMusic();
+                if (currentScreen === 1) {
+                    // 第一页上滑 = 点击印章
+                    const seal = document.querySelector('.s1-seal');
+                    if (seal && !seal.classList.contains('glow')) {
+                        sealClick(seal);
+                    }
+                } else if (currentScreen < 5) {
+                    goTo(currentScreen + 1);
+                }
+            }
+        }, { passive: true });
+
+        // 鼠标上滑（PC端）
+        let mouseStartY = 0;
+        document.addEventListener('mousedown', (e) => { mouseStartY = e.clientY; });
+        document.addEventListener('mouseup', (e) => {
+            const diff = mouseStartY - e.clientY;
+            if (diff > 50) {
+                startMusic();
+                if (currentScreen === 1) {
+                    const seal = document.querySelector('.s1-seal');
+                    if (seal && !seal.classList.contains('glow')) {
+                        sealClick(seal);
+                    }
+                } else if (currentScreen < 5) {
+                    goTo(currentScreen + 1);
+                }
+            }
+        });
 
         // Petals
         setInterval(() => {
