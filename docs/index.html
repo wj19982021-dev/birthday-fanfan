@@ -4,17 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#f6efe1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>风起小笺</title>
     <style>
-        @font-face {
-            font-family: "ZhaoMengfu";
-            src: url("./assets/font/zhaomengfu.woff2") format("woff2");
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-
         :root {
             --paper: #f6efe1;
             --paper-light: #fbf7ee;
@@ -27,728 +18,703 @@
             --seal-red: #b65a3c;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             overflow: hidden;
             background: #1a1510;
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-            -webkit-font-smoothing: antialiased;
         }
 
-        /* Loading Screen */
+        /* Loading */
         .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; inset: 0;
             background: var(--paper);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
             z-index: 9999;
             transition: opacity 0.8s ease, visibility 0.8s ease;
         }
-
-        .loading.hidden {
-            opacity: 0;
-            visibility: hidden;
+        .loading.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .loading h1 {
+            font-size: 42px; color: var(--ink);
+            letter-spacing: 8px; margin-bottom: 16px;
         }
-
-        .loading-title {
-            font-family: "ZhaoMengfu", "STKaiti", "KaiTi", serif;
-            font-size: 42px;
-            color: var(--ink);
-            margin-bottom: 16px;
-            letter-spacing: 8px;
-        }
-
-        .loading-sub {
-            font-size: 14px;
-            color: var(--ink-soft);
-            letter-spacing: 4px;
-            margin-bottom: 40px;
-        }
-
+        .loading p { font-size: 14px; color: var(--ink-soft); letter-spacing: 4px; }
         .loading-dog {
-            width: 80px;
-            height: 60px;
-            position: relative;
+            margin-top: 40px; width: 80px; height: 50px;
+            background: #f5f0e8; border-radius: 50% 50% 40% 40%;
+            position: relative; animation: dogWalk 1s ease-in-out infinite;
         }
-
-        .loading-dog-body {
-            width: 50px;
-            height: 35px;
-            background: #f5f0e8;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 0;
-            left: 15px;
+        .loading-dog::before {
+            content: ''; position: absolute; right: -15px; top: -10px;
+            width: 35px; height: 30px; background: #f5f0e8; border-radius: 50%;
         }
-
-        .loading-dog-head {
-            width: 30px;
-            height: 28px;
-            background: #f5f0e8;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 20px;
-            right: 5px;
+        .loading-dog::after {
+            content: ''; position: absolute; left: -10px; top: 5px;
+            width: 25px; height: 8px; background: #f5f0e8; border-radius: 10px;
+            animation: tailWag 0.3s ease-in-out infinite alternate;
         }
+        @keyframes dogWalk { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        @keyframes tailWag { from { transform: rotate(-20deg); } to { transform: rotate(20deg); } }
 
-        .loading-dog-ear {
-            width: 12px;
-            height: 16px;
-            background: #e8e0d0;
-            border-radius: 50%;
-            position: absolute;
-            top: -5px;
-            right: 0;
-        }
-
-        .loading-dog-tail {
-            width: 20px;
-            height: 8px;
-            background: #f5f0e8;
-            border-radius: 10px;
-            position: absolute;
-            bottom: 15px;
-            left: 0;
-            transform-origin: right center;
-            animation: tailWag 0.4s ease-in-out infinite alternate;
-        }
-
-        @keyframes tailWag {
-            from { transform: rotate(-15deg); }
-            to { transform: rotate(15deg); }
-        }
-
-        .loading-envelope {
-            width: 25px;
-            height: 18px;
-            background: var(--gold);
-            border-radius: 2px;
-            position: absolute;
-            bottom: 25px;
-            right: 10px;
-        }
-
-        /* App Container */
-        .app {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #1a1510;
-        }
-
+        /* App */
+        .app { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         .canvas {
-            position: relative;
-            width: 946px;
-            height: 2048px;
-            transform-origin: top left;
+            position: relative; width: 390px; height: 844px;
+            overflow: hidden; background: var(--paper);
+        }
+
+        /* Screen */
+        .screen {
+            position: absolute; inset: 0;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
             overflow: hidden;
         }
+        .screen.active { opacity: 1; visibility: visible; }
 
-        /* Screen Base */
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 946px;
-            height: 2048px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-
-        .screen.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .screen-bg {
-            width: 946px;
-            height: 2048px;
-            object-fit: fill;
-            display: block;
-        }
-
-        /* Hitbox Base */
-        .hitbox {
-            position: absolute;
-            cursor: pointer;
+        /* Hitbox */
+        .hit {
+            position: absolute; cursor: pointer;
             -webkit-tap-highlight-color: transparent;
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease;
         }
+        .hit:active { transform: scale(0.96); }
 
-        .hitbox:active {
-            transform: scale(0.97);
+        /* ====== Scene 1: 启封 ====== */
+        .s1 { background: linear-gradient(180deg, #e8e0d0 0%, var(--paper) 30%, #d4c8b0 100%); }
+        .s1::before {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40%;
+            background: linear-gradient(180deg, transparent, rgba(185,200,193,0.3));
         }
-
-        /* Music Button */
-        .music-btn {
-            position: absolute;
-            right: 30px;
-            top: 40px;
-            width: 120px;
-            height: 45px;
-            background: rgba(255,255,255,0.8);
-            border-radius: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 13px;
-            color: var(--ink-soft);
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(184,145,75,0.2);
+        /* 远山 */
+        .s1-mountains {
+            position: absolute; bottom: 35%; left: 0; right: 0; height: 200px;
+            background:
+                radial-gradient(ellipse 120px 100px at 20% 100%, rgba(143,159,122,0.3), transparent),
+                radial-gradient(ellipse 150px 120px at 50% 100%, rgba(143,159,122,0.25), transparent),
+                radial-gradient(ellipse 100px 80px at 80% 100%, rgba(143,159,122,0.2), transparent);
         }
-
-        .music-icon {
-            width: 16px;
-            height: 16px;
+        /* 水面 */
+        .s1-water {
+            position: absolute; bottom: 0; left: 0; right: 0; height: 35%;
+            background: linear-gradient(180deg, rgba(185,200,193,0.4), rgba(185,200,193,0.6));
         }
-
-        /* ====== Screen 1: 启封 ====== */
-        .seal-hitbox {
-            left: 420px;
-            top: 1245px;
-            width: 260px;
-            height: 280px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,180,80,0.15) 0%, transparent 70%);
+        /* 标题 */
+        .s1-title {
+            position: absolute; top: 25%; left: 0; right: 0; text-align: center;
+            animation: fadeUp 1s ease 0.5s both;
         }
-
-        .seal-hitbox:hover {
-            background: radial-gradient(circle, rgba(255,180,80,0.3) 0%, transparent 70%);
+        .s1-title .name { font-size: 22px; color: var(--ink-soft); letter-spacing: 4px; }
+        .s1-title h1 {
+            font-size: 52px; color: var(--ink); letter-spacing: 6px;
+            margin: 12px 0; font-weight: 900;
         }
-
-        .seal-hitbox.glowing {
-            animation: sealGlow 1.2s ease-out forwards;
+        .s1-title .wish {
+            font-size: 15px; color: var(--ink-soft); line-height: 2;
+            letter-spacing: 2px; margin-top: 20px;
         }
-
+        /* 印章 */
+        .s1-seal {
+            position: absolute; bottom: 22%; left: 50%; transform: translateX(-50%);
+            width: 70px; height: 70px; border: 3px solid var(--seal-red);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            font-size: 28px; color: var(--seal-red); font-weight: bold;
+            animation: fadeIn 1s ease 1s both;
+            transition: all 0.3s ease;
+        }
+        .s1-seal:hover { box-shadow: 0 0 30px rgba(182,90,60,0.3); }
+        .s1-seal.glow {
+            animation: sealGlow 1s ease forwards;
+        }
         @keyframes sealGlow {
-            0% {
-                background: radial-gradient(circle, rgba(255,180,80,0.2) 0%, transparent 70%);
-                box-shadow: 0 0 0 rgba(255,180,80,0);
-            }
-            50% {
-                background: radial-gradient(circle, rgba(255,200,100,0.5) 0%, transparent 70%);
-                box-shadow: 0 0 60px rgba(255,200,100,0.5);
-            }
-            100% {
-                background: radial-gradient(circle, rgba(255,220,150,0.7) 0%, transparent 70%);
-                box-shadow: 0 0 100px rgba(255,220,150,0.7);
-                transform: scale(1.3);
-                opacity: 0;
-            }
+            0% { box-shadow: 0 0 0 rgba(255,200,100,0); }
+            50% { box-shadow: 0 0 60px rgba(255,200,100,0.6); transform: translateX(-50%) scale(1.2); }
+            100% { box-shadow: 0 0 100px rgba(255,200,100,0.8); transform: translateX(-50%) scale(1.4); opacity: 0; }
+        }
+        /* 提示 */
+        .s1-tip {
+            position: absolute; bottom: 12%; left: 0; right: 0; text-align: center;
+            font-size: 13px; color: var(--ink-soft); letter-spacing: 3px;
+            animation: fadeIn 1s ease 1.2s both, pulse 2s ease-in-out 2s infinite;
+        }
+        .s1-tip::after {
+            content: '↓'; display: block; margin-top: 8px; font-size: 18px;
+            animation: bounce 1.5s ease-in-out infinite;
+        }
+        /* 小狗 */
+        .s1-dog {
+            position: absolute; bottom: 18%; left: 10%; width: 80px; height: 55px;
+            background: #f5f0e8; border-radius: 50% 50% 40% 40%;
+            animation: fadeIn 0.8s ease 0.8s both;
+        }
+        .s1-dog::before {
+            content: ''; position: absolute; right: -12px; top: -8px;
+            width: 30px; height: 26px; background: #f5f0e8; border-radius: 50%;
+        }
+        .s1-dog::after {
+            content: ''; position: absolute; left: -8px; top: 8px;
+            width: 20px; height: 6px; background: #f5f0e8; border-radius: 10px;
         }
 
-        /* ====== Screen 2: 江南 ====== */
-        .water-hitbox {
-            left: 100px;
-            top: 1050px;
-            width: 300px;
-            height: 180px;
-            border-radius: 50%;
+        /* ====== Scene 2: 江南 ====== */
+        .s2 { background: linear-gradient(180deg, #d4c8b0 0%, var(--mist-blue) 50%, #b0c0b8 100%); }
+        .s2::before {
+            content: ''; position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+            width: 200px; height: 100px; border: 2px solid rgba(47,42,36,0.15);
+            border-bottom: none; border-radius: 100px 100px 0 0;
         }
-
-        .ripple-effect {
-            position: absolute;
-            left: 100px;
-            top: 1050px;
-            width: 300px;
-            height: 180px;
-            border-radius: 50%;
-            border: 2px solid rgba(139,164,176,0.5);
-            pointer-events: none;
+        /* 柳枝 */
+        .willow {
+            position: absolute; width: 2px; background: linear-gradient(180deg, var(--green), transparent);
+            opacity: 0.5; transform-origin: top center;
+            animation: sway 4s ease-in-out infinite;
+        }
+        .willow:nth-child(1) { left: 15%; height: 120px; animation-delay: 0s; }
+        .willow:nth-child(2) { left: 25%; height: 100px; animation-delay: 0.5s; }
+        .willow:nth-child(3) { right: 20%; height: 110px; animation-delay: 1s; }
+        @keyframes sway { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        /* 标题 */
+        .s2-text {
+            position: absolute; top: 15%; left: 24px; right: 24px;
+            text-align: center; animation: fadeUp 1s ease 0.3s both;
+        }
+        .s2-text h2 {
+            font-size: 16px; color: var(--ink); line-height: 2.2;
+            letter-spacing: 2px; font-weight: 400;
+        }
+        /* 涟漪 */
+        .ripple {
+            position: absolute; top: 55%; left: 50%; transform: translate(-50%,-50%);
+            width: 60px; height: 30px; border: 1.5px solid rgba(139,164,176,0.4);
+            border-radius: 50%; pointer-events: none;
             animation: rippleExpand 1.5s ease-out forwards;
         }
-
-        @keyframes rippleExpand {
-            0% { transform: scale(0.3); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
+        @keyframes rippleExpand { 0% { transform: translate(-50%,-50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(3); opacity: 0; } }
+        /* 卡片 */
+        .s2-cards {
+            position: absolute; bottom: 8%; left: 16px; right: 16px;
+            display: flex; gap: 10px;
         }
-
-        .card-hitbox {
-            width: 280px;
-            height: 330px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
+        .s2-card {
+            flex: 1; background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
+            border-radius: 12px; padding: 16px 10px; text-align: center;
+            border: 1px solid rgba(184,145,75,0.2);
+            animation: fadeUp 0.8s ease calc(0.5s * var(--i)) both;
+            transition: transform 0.3s ease, background 0.3s ease;
+            cursor: pointer;
         }
+        .s2-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.9); }
+        .s2-card h3 { font-size: 14px; color: var(--ink); margin-bottom: 8px; }
+        .s2-card p { font-size: 11px; color: var(--ink-soft); line-height: 1.6; }
 
-        .card-hitbox:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateY(-8px);
+        /* ====== Scene 3: 烟火 ====== */
+        .s3 {
+            background: linear-gradient(180deg, #2a3040 0%, #3a4050 40%, #4a5060 100%);
         }
-
-        .card-1 { left: 40px; top: 1510px; }
-        .card-2 { left: 335px; top: 1510px; }
-        .card-3 { left: 630px; top: 1510px; }
-
-        /* ====== Screen 3: 烟火 ====== */
-        .lamp-hitbox {
-            left: 700px;
-            top: 650px;
-            width: 200px;
-            height: 420px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
+        /* 窗户 */
+        .s3-window {
+            position: absolute; top: 8%; left: 50%; transform: translateX(-50%);
+            width: 180px; height: 220px; border: 3px solid rgba(139,115,85,0.4);
+            border-radius: 90px 90px 0 0; overflow: hidden;
         }
-
-        .lamp-hitbox.on {
-            background: radial-gradient(circle, rgba(255,200,100,0.3) 0%, transparent 70%);
-            box-shadow: 0 0 80px rgba(255,200,100,0.25);
+        .s3-window::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(180deg, #1a2030 0%, #2a3545 50%, rgba(232,201,130,0.2) 100%);
         }
-
-        .dish-hitbox {
-            width: 270px;
-            height: 185px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
+        .s3-window::after {
+            content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px;
+            background: rgba(139,115,85,0.3);
         }
-
-        .dish-hitbox:hover {
-            background: rgba(255,255,255,0.12);
-            transform: scale(1.05);
+        /* 星星 */
+        .star {
+            position: absolute; width: 3px; height: 3px; background: #fff;
+            border-radius: 50%; animation: twinkle 2s ease-in-out infinite;
         }
-
-        .dish-hitbox.active {
-            animation: dishBounce 0.4s ease;
+        @keyframes twinkle { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+        /* 台灯 */
+        .s3-lamp {
+            position: absolute; top: 50%; right: 15%; width: 50px; height: 120px;
+            cursor: pointer; transition: all 0.3s ease;
         }
-
-        @keyframes dishBounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+        .s3-lamp::before {
+            content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 30px; background: var(--gold); border-radius: 0 0 50% 50%;
         }
-
-        .dish-1 { left: 340px; top: 1480px; }
-        .dish-2 { left: 620px; top: 1440px; }
-
-        /* Food Bubble */
-        .food-bubble {
-            position: absolute;
-            left: 510px;
-            top: 1240px;
-            width: 385px;
-            height: 145px;
-            pointer-events: none;
+        .s3-lamp::after {
+            content: ''; position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
+            width: 4px; height: 60px; background: #8b7355;
+        }
+        .s3-lamp .glow {
+            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 120px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(232,201,130,0.4), transparent);
+            opacity: 0; transition: opacity 0.5s ease;
+            animation: breathe 3s ease-in-out infinite;
+        }
+        .s3-lamp.on .glow { opacity: 1; }
+        @keyframes breathe { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.1); } }
+        /* 桌子 */
+        .s3-table {
+            position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%);
+            width: 200px; height: 8px; background: #8b7355; border-radius: 4px;
+        }
+        .s3-table::before, .s3-table::after {
+            content: ''; position: absolute; bottom: -40px; width: 6px; height: 40px;
+            background: #8b7355;
+        }
+        .s3-table::before { left: 20px; }
+        .s3-table::after { right: 20px; }
+        /* 碗 */
+        .s3-bowl {
+            position: absolute; bottom: 22%; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 20px; background: #d4c0a0; border-radius: 0 0 50% 50%;
+            cursor: pointer; transition: transform 0.3s ease;
+        }
+        .s3-bowl:hover { transform: translateX(-50%) scale(1.1); }
+        .s3-bowl::before {
+            content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+            width: 30px; height: 12px; background: #f5f0e8; border-radius: 50%;
+        }
+        /* 小狗 */
+        .s3-dog {
+            position: absolute; bottom: 15%; left: 20%; width: 70px; height: 40px;
+            background: #f5f0e8; border-radius: 50% 50% 40% 40%;
+        }
+        .s3-dog::before {
+            content: ''; position: absolute; right: -10px; top: -6px;
+            width: 25px; height: 22px; background: #f5f0e8; border-radius: 50%;
+        }
+        /* 文案 */
+        .s3-text {
+            position: absolute; top: 55%; left: 24px; right: 24px;
+            text-align: center; animation: fadeUp 1s ease 0.3s both;
+        }
+        .s3-text h2 {
+            font-size: 16px; color: #f6efe1; line-height: 2.2;
+            letter-spacing: 2px; font-weight: 400;
+        }
+        /* 气泡 */
+        .s3-bubble {
+            position: absolute; top: 45%; right: 10%;
+            background: rgba(255,255,255,0.9); border-radius: 16px;
+            padding: 12px 16px; font-size: 13px; color: var(--ink);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             animation: bubblePop 0.5s ease;
         }
-
-        @keyframes bubblePop {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        .s3-bubble::after {
+            content: ''; position: absolute; bottom: -8px; left: 20px;
+            width: 0; height: 0; border-left: 8px solid transparent;
+            border-right: 8px solid transparent; border-top: 8px solid rgba(255,255,255,0.9);
+        }
+        @keyframes bubblePop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        /* 提示 */
+        .s3-tip {
+            position: absolute; bottom: 8%; left: 16px; right: 16px;
+            text-align: center; font-size: 12px; color: rgba(246,239,225,0.6);
+            letter-spacing: 2px;
         }
 
-        /* ====== Screen 4: 愿望签 ====== */
-        .tag-hitbox {
-            width: 145px;
-            height: 590px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.03);
+        /* ====== Scene 4: 愿望签 ====== */
+        .s4 {
+            background: linear-gradient(180deg, var(--paper) 0%, #ede5d5 100%);
+        }
+        .s4::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100px;
+            background: linear-gradient(180deg, rgba(184,145,75,0.1), transparent);
+        }
+        .s4-title {
+            position: absolute; top: 8%; left: 0; right: 0; text-align: center;
+            animation: fadeUp 1s ease 0.3s both;
+        }
+        .s4-title h2 {
+            font-size: 18px; color: var(--ink); letter-spacing: 4px; font-weight: 400;
+        }
+        /* 签牌 */
+        .s4-tags {
+            position: absolute; top: 20%; left: 16px; right: 16px;
+            display: flex; gap: 8px; justify-content: center;
+        }
+        .s4-tag {
+            width: 56px; height: 240px; background: linear-gradient(180deg, #f5f0e8, #ede5d5);
+            border-radius: 6px; border: 1px solid rgba(184,145,75,0.2);
+            display: flex; flex-direction: column; align-items: center;
+            padding-top: 20px; cursor: pointer;
+            transition: all 0.3s ease; position: relative;
+        }
+        .s4-tag::before {
+            content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 16px; background: var(--gold); border-radius: 4px;
+        }
+        .s4-tag::after {
+            content: ''; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+            width: 2px; height: 20px; background: var(--gold); opacity: 0.5;
+        }
+        .s4-tag:hover { transform: translateY(-8px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .s4-tag.active { transform: translateY(-12px); box-shadow: 0 12px 30px rgba(0,0,0,0.15); }
+        .s4-tag .icon { font-size: 24px; margin-bottom: 12px; }
+        .s4-tag .label { font-size: 10px; color: var(--ink-soft); writing-mode: vertical-rl; letter-spacing: 2px; }
+        /* 结果区 */
+        .s4-result {
+            position: absolute; bottom: 15%; left: 24px; right: 24px;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
+            border-radius: 16px; padding: 24px; text-align: center;
+            border: 1px solid rgba(184,145,75,0.2);
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        .s4-result.show { opacity: 1; transform: translateY(0); }
+        .s4-result h3 { font-size: 18px; color: var(--ink); margin-bottom: 12px; }
+        .s4-result p { font-size: 14px; color: var(--ink-soft); line-height: 1.8; }
+        .s4-default { font-size: 13px; color: var(--ink-soft); letter-spacing: 2px; }
+
+        /* ====== Scene 5: 收信 ====== */
+        .s5 { background: linear-gradient(180deg, var(--paper) 0%, #e8e0d0 100%); }
+        .s5-letter {
+            position: absolute; top: 15%; left: 16px; right: 16px;
+            background: #fff; border-radius: 12px; padding: 32px 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(184,145,75,0.15);
+            animation: fadeUp 1s ease 0.3s both;
+        }
+        .s5-letter h2 {
+            font-size: 20px; color: var(--ink); text-align: center;
+            margin-bottom: 24px; letter-spacing: 4px;
+        }
+        .s5-letter p {
+            font-size: 15px; color: var(--ink-soft); line-height: 2.2;
+            text-align: center; letter-spacing: 1px;
+        }
+        .s5-letter .sign {
+            margin-top: 24px; font-size: 13px; color: var(--gold);
+            text-align: right; letter-spacing: 2px;
+        }
+        /* 按钮 */
+        .s5-btn {
+            position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
+            background: var(--gold); color: #fff; border: none;
+            padding: 14px 36px; border-radius: 30px; font-size: 15px;
+            letter-spacing: 3px; cursor: pointer;
             transition: all 0.3s ease;
+            animation: fadeIn 1s ease 1s both, pulse 2s ease-in-out 2s infinite;
         }
-
-        .tag-hitbox:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-8px);
+        .s5-btn:hover { transform: translateX(-50%) scale(1.05); box-shadow: 0 6px 20px rgba(184,145,75,0.4); }
+        /* 最终祝福 */
+        .s5-final {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: rgba(246,239,225,0.92);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.8s ease;
         }
-
-        .tag-hitbox.active {
-            animation: tagBounce 0.5s ease;
-            background: rgba(255,255,255,0.15);
-        }
-
-        @keyframes tagBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        .t1 { left: 80px; top: 555px; }
-        .t2 { left: 260px; top: 555px; }
-        .t3 { left: 440px; top: 555px; }
-        .t4 { left: 620px; top: 555px; }
-        .t5 { left: 800px; top: 555px; }
-
-        /* ====== Screen 5: 收信 ====== */
-        .button-hitbox {
-            left: 260px;
-            top: 1390px;
-            width: 480px;
-            height: 120px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            animation: btnPulse 2s ease-in-out infinite;
-        }
-
-        .button-hitbox:hover {
-            background: rgba(255,255,255,0.12);
-            transform: scale(1.03);
-        }
-
-        @keyframes btnPulse {
-            0%, 100% { box-shadow: 0 0 0 rgba(200,160,80,0); }
-            50% { box-shadow: 0 0 30px rgba(200,160,80,0.25); }
-        }
-
-        .final-overlay {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 946px;
-            height: 2048px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(246,239,225,0.88);
-            animation: fadeIn 0.8s ease;
-        }
-
-        .final-overlay span {
-            font-family: "ZhaoMengfu", "STKaiti", "KaiTi", serif;
-            font-size: 42px;
-            color: var(--ink);
-            letter-spacing: 4px;
+        .s5-final.show { opacity: 1; pointer-events: all; }
+        .s5-final h2 {
+            font-size: 28px; color: var(--ink); letter-spacing: 4px;
             animation: scaleIn 0.8s ease;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .s5-final p {
+            font-size: 14px; color: var(--ink-soft); margin-top: 16px;
+            letter-spacing: 3px; animation: fadeUp 0.8s ease 0.3s both;
         }
-
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
+        /* 小狗 */
+        .s5-dog {
+            position: absolute; bottom: 25%; left: 15%; width: 80px; height: 55px;
+            background: #f5f0e8; border-radius: 50% 50% 40% 40%;
+        }
+        .s5-dog::before {
+            content: ''; position: absolute; right: -12px; top: -8px;
+            width: 30px; height: 26px; background: #f5f0e8; border-radius: 50%;
+        }
+        .s5-dog .envelope {
+            position: absolute; right: -20px; top: 0; width: 28px; height: 20px;
+            background: var(--gold); border-radius: 3px;
         }
 
         /* Arrow */
-        .arrow-hitbox {
-            left: 440px;
-            top: 1920px;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            animation: float 2s ease-in-out infinite;
+        .arrow {
+            position: absolute; bottom: 4%; left: 50%; transform: translateX(-50%);
+            font-size: 20px; color: var(--ink-soft); opacity: 0.5;
+            animation: bounce 1.5s ease-in-out infinite; cursor: pointer;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* Petal Animation */
+        /* Petal */
         .petal {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: radial-gradient(ellipse, rgba(201,160,160,0.6), transparent);
+            position: absolute; pointer-events: none;
+            width: 10px; height: 10px;
+            background: radial-gradient(ellipse, rgba(201,160,160,0.5), transparent);
             border-radius: 50% 0 50% 0;
-            pointer-events: none;
             animation: petalFall linear forwards;
         }
-
         @keyframes petalFall {
-            0% {
-                transform: translateY(0) rotate(0deg) translateX(0);
-                opacity: 0.7;
-            }
-            25% { transform: translateY(25vh) rotate(90deg) translateX(20px); }
-            50% { transform: translateY(50vh) rotate(180deg) translateX(-15px); }
-            75% { transform: translateY(75vh) rotate(270deg) translateX(25px); }
-            100% {
-                transform: translateY(105vh) rotate(360deg) translateX(-10px);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0.6; }
+            50% { transform: translateY(50vh) rotate(180deg) translateX(20px); }
+            100% { transform: translateY(105vh) rotate(360deg) translateX(-10px); opacity: 0; }
         }
 
-        /* Willow Animation */
-        .willow {
-            position: absolute;
-            width: 3px;
-            background: linear-gradient(180deg, var(--green), transparent);
-            opacity: 0.4;
-            transform-origin: top center;
-            animation: willowSway 4s ease-in-out infinite;
+        /* Music */
+        .music {
+            position: absolute; top: 16px; right: 16px; z-index: 100;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(8px);
+            border-radius: 20px; padding: 8px 14px; font-size: 12px;
+            color: var(--ink-soft); cursor: pointer; border: 1px solid rgba(184,145,75,0.2);
+            display: flex; align-items: center; gap: 6px;
         }
 
-        @keyframes willowSway {
-            0%, 100% { transform: rotate(-3deg); }
-            50% { transform: rotate(3deg); }
-        }
-
-        /* Lamp Glow Animation */
-        .lamp-glow {
-            position: absolute;
-            left: 720px;
-            top: 680px;
-            width: 160px;
-            height: 160px;
-            background: radial-gradient(circle, rgba(232,201,130,0.4), transparent);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: lampBreathe 3s ease-in-out infinite;
-        }
-
-        @keyframes lampBreathe {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
+        /* Animations */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.03); } }
+        @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-8px); } }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
+    <!-- Loading -->
     <div class="loading" id="loading">
-        <div class="loading-title">风起小笺</div>
-        <div class="loading-sub">正在送达……</div>
-        <div class="loading-dog">
-            <div class="loading-dog-body"></div>
-            <div class="loading-dog-head">
-                <div class="loading-dog-ear"></div>
-            </div>
-            <div class="loading-dog-tail"></div>
-            <div class="loading-envelope"></div>
-        </div>
+        <h1>风起小笺</h1>
+        <p>正在送达……</p>
+        <div class="loading-dog"></div>
     </div>
 
-    <!-- App -->
     <div class="app">
         <div class="canvas" id="canvas">
-            <!-- Screen 1: 启封 -->
-            <div class="screen active" id="screen1">
-                <img src="assets/screens/screen-1-bg.png" alt="" class="screen-bg">
-                <div class="music-btn" id="musicBtn1">
-                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18V5l12-2v13"></path>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <circle cx="18" cy="16" r="3"></circle>
-                    </svg>
-                    音乐：关
+
+            <!-- ====== Screen 1: 启封 ====== -->
+            <div class="screen s1 active" id="screen1">
+                <div class="music" onclick="toggleMusic(this)">♪ 音乐：关</div>
+                <div class="s1-mountains"></div>
+                <div class="s1-water"></div>
+                <div class="s1-dog"></div>
+                <div class="s1-title">
+                    <div class="name">小范同学，</div>
+                    <h1>生日快乐</h1>
+                    <div class="wish">
+                        愿新的一岁，<br>
+                        日子有光，心里有风，<br>
+                        饭菜热乎，梦也安稳。
+                    </div>
                 </div>
-                <div class="hitbox seal-hitbox" id="sealHitbox"></div>
+                <div class="s1-seal" onclick="sealClick(this)">印</div>
+                <div class="s1-tip">轻轻点一下，拆开这份小笺</div>
             </div>
 
-            <!-- Screen 2: 江南 -->
-            <div class="screen" id="screen2">
-                <img src="assets/screens/screen-2-bg.png" alt="" class="screen-bg">
-                <div class="music-btn">
-                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18V5l12-2v13"></path>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <circle cx="18" cy="16" r="3"></circle>
-                    </svg>
-                    音乐：关
+            <!-- ====== Screen 2: 江南 ====== -->
+            <div class="screen s2" id="screen2">
+                <div class="music" onclick="toggleMusic(this)">♪ 音乐：关</div>
+                <div class="willow"></div>
+                <div class="willow"></div>
+                <div class="willow"></div>
+                <div class="s2-text">
+                    <h2>
+                        愿你依旧喜欢江南的风，<br>
+                        喜欢那些慢慢走过的四季，<br>
+                        也喜欢那个认真生活的自己。<br><br>
+                        有些风景不必赶路，<br>
+                        慢慢看，就很好。
+                    </h2>
                 </div>
-                <div class="hitbox water-hitbox" id="waterHitbox"></div>
-                <div class="hitbox card-hitbox card-1"></div>
-                <div class="hitbox card-hitbox card-2"></div>
-                <div class="hitbox card-hitbox card-3"></div>
-                <div class="hitbox arrow-hitbox" data-next="3"></div>
+                <div class="hit" style="top:50%;left:20%;width:60%;height:15%;" onclick="addRipple(this.parentElement)"></div>
+                <div class="s2-cards">
+                    <div class="s2-card" style="--i:0">
+                        <h3>长桥风起</h3>
+                        <p>风过桥头，愿你前路都有温柔相送。</p>
+                    </div>
+                    <div class="s2-card" style="--i:1">
+                        <h3>柳下听风</h3>
+                        <p>风拂柳枝，愿你心里的事，慢慢被吹轻。</p>
+                    </div>
+                    <div class="s2-card" style="--i:2">
+                        <h3>湖边小晴天</h3>
+                        <p>寻常日子里，也总有一点点小晴朗。</p>
+                    </div>
+                </div>
+                <div class="arrow" onclick="goTo(3)">↓</div>
             </div>
 
-            <!-- Screen 3: 烟火 -->
-            <div class="screen" id="screen3">
-                <img src="assets/screens/screen-3-bg.png" alt="" class="screen-bg">
-                <div class="music-btn">
-                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18V5l12-2v13"></path>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <circle cx="18" cy="16" r="3"></circle>
-                    </svg>
-                    音乐：关
+            <!-- ====== Screen 3: 烟火 ====== -->
+            <div class="screen s3" id="screen3">
+                <div class="music" onclick="toggleMusic(this)">♪ 音乐：关</div>
+                <div class="s3-window"></div>
+                <div class="star" style="top:12%;left:30%;animation-delay:0s;"></div>
+                <div class="star" style="top:15%;left:60%;animation-delay:0.5s;"></div>
+                <div class="star" style="top:10%;left:75%;animation-delay:1s;"></div>
+                <div class="s3-lamp" onclick="toggleLamp(this)"><div class="glow"></div></div>
+                <div class="s3-table"></div>
+                <div class="s3-bowl" onclick="showBubble(this.parentElement)"></div>
+                <div class="s3-dog"></div>
+                <div class="s3-text">
+                    <h2>
+                        愿每餐都有滋有味，<br>
+                        每个日子都值得期待。<br><br>
+                        愿寻常的日子里，<br>
+                        总有一两件值得期待的小事。<br><br>
+                        好好吃饭，<br>
+                        好好睡觉，<br>
+                        慢慢开心。
+                    </h2>
                 </div>
-                <div class="lamp-glow" id="lampGlow" style="display:none;"></div>
-                <div class="hitbox lamp-hitbox" id="lampHitbox"></div>
-                <div class="hitbox dish-hitbox dish-1" id="dish1"></div>
-                <div class="hitbox dish-hitbox dish-2" id="dish2"></div>
-                <div class="hitbox arrow-hitbox" data-next="4"></div>
+                <div class="s3-tip">悄悄点一下，会有小惊喜哦✨</div>
+                <div class="arrow" onclick="goTo(4)" style="color:#f6efe1;">↓</div>
             </div>
 
-            <!-- Screen 4: 愿望签 -->
-            <div class="screen" id="screen4">
-                <img src="assets/screens/screen-4-bg.png" alt="" class="screen-bg">
-                <div class="music-btn">
-                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18V5l12-2v13"></path>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <circle cx="18" cy="16" r="3"></circle>
-                    </svg>
-                    音乐：关
+            <!-- ====== Screen 4: 愿望签 ====== -->
+            <div class="screen s4" id="screen4">
+                <div class="music" onclick="toggleMusic(this)">♪ 音乐：关</div>
+                <div class="s4-title">
+                    <h2>愿你新的一岁，<br>心想事成，万事顺意。</h2>
                 </div>
-                <div class="hitbox tag-hitbox t1" data-tag="1"></div>
-                <div class="hitbox tag-hitbox t2" data-tag="2"></div>
-                <div class="hitbox tag-hitbox t3" data-tag="3"></div>
-                <div class="hitbox tag-hitbox t4" data-tag="4"></div>
-                <div class="hitbox tag-hitbox t5" data-tag="5"></div>
-                <div class="hitbox arrow-hitbox" data-next="5"></div>
+                <div class="s4-tags">
+                    <div class="s4-tag" onclick="selectTag(0,this)">
+                        <div class="icon">🍚</div>
+                        <div class="label">好好吃饭</div>
+                    </div>
+                    <div class="s4-tag" onclick="selectTag(1,this)">
+                        <div class="icon">😴</div>
+                        <div class="label">多睡好觉</div>
+                    </div>
+                    <div class="s4-tag" onclick="selectTag(2,this)">
+                        <div class="icon">☁️</div>
+                        <div class="label">少些焦虑</div>
+                    </div>
+                    <div class="s4-tag" onclick="selectTag(3,this)">
+                        <div class="icon">🎊</div>
+                        <div class="label">喜乐暴富</div>
+                    </div>
+                    <div class="s4-tag" onclick="selectTag(4,this)">
+                        <div class="icon">🌸</div>
+                        <div class="label">做自己</div>
+                    </div>
+                </div>
+                <div class="s4-result" id="s4Result">
+                    <div class="s4-default">轻轻点一枚愿望签</div>
+                </div>
+                <div class="arrow" onclick="goTo(5)">↓</div>
             </div>
 
-            <!-- Screen 5: 收信 -->
-            <div class="screen" id="screen5">
-                <img src="assets/screens/screen-5-bg.png" alt="" class="screen-bg">
-                <div class="music-btn">
-                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18V5l12-2v13"></path>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <circle cx="18" cy="16" r="3"></circle>
-                    </svg>
-                    音乐：关
+            <!-- ====== Screen 5: 收信 ====== -->
+            <div class="screen s5" id="screen5">
+                <div class="music" onclick="toggleMusic(this)">♪ 音乐：关</div>
+                <div class="s5-dog"><div class="envelope"></div></div>
+                <div class="s5-letter">
+                    <h2>生日快乐，小范同学</h2>
+                    <p>
+                        今天不说太多啦，<br>
+                        就送你一份小祝福，<br>
+                        也送你一份慢慢来的心意。<br><br>
+                        愿你三十岁，<br>
+                        仍有眼里的光，<br>
+                        也有此刻的安稳与从容。<br><br>
+                        看到这里就好，<br>
+                        今天只负责做开心的自己。
+                    </p>
+                    <div class="sign">—— 一个记得你生日的人</div>
                 </div>
-                <div class="hitbox button-hitbox" id="buttonHitbox"></div>
+                <button class="s5-btn" onclick="receiveLetter()">收下这份碎碎念 ✨</button>
+                <div class="s5-final" id="s5Final">
+                    <h2>愿你每天都有小开心 ✨</h2>
+                    <p>生日快乐，小范同学</p>
+                </div>
             </div>
+
         </div>
     </div>
 
-    <!-- Audio -->
     <audio id="bgm" loop src="assets/bgm.mp3"></audio>
 
     <script>
-        const CANVAS_W = 946;
-        const CANVAS_H = 2048;
-        let currentScreen = 1;
-        let musicPlaying = false;
-
-        // Scale canvas
+        // Scale
         function updateScale() {
-            const canvas = document.getElementById('canvas');
-            const vw = window.innerWidth;
-            const vh = window.innerHeight;
-            const scaleX = vw / CANVAS_W;
-            const scaleY = vh / CANVAS_H;
-            const scale = Math.min(scaleX, scaleY);
-            canvas.style.transform = `scale(${scale})`;
-            canvas.style.marginLeft = `${(vw - CANVAS_W * scale) / 2}px`;
-            canvas.style.marginTop = `${(vh - CANVAS_H * scale) / 2}px`;
+            const c = document.getElementById('canvas');
+            const s = Math.min(window.innerWidth / 390, window.innerHeight / 844);
+            c.style.transform = `scale(${s})`;
+            c.style.marginLeft = `${(window.innerWidth - 390 * s) / 2}px`;
+            c.style.marginTop = `${(window.innerHeight - 844 * s) / 2}px`;
         }
         updateScale();
         window.addEventListener('resize', updateScale);
 
         // Loading
-        setTimeout(() => {
-            document.getElementById('loading').classList.add('hidden');
-        }, 2000);
+        setTimeout(() => document.getElementById('loading').classList.add('hidden'), 2000);
 
         // Go to screen
-        function goToScreen(num) {
+        function goTo(n) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen' + num).classList.add('active');
-            currentScreen = num;
+            document.getElementById('screen' + n).classList.add('active');
         }
 
-        // Create petal
-        function createPetal() {
-            const petal = document.createElement('div');
-            petal.className = 'petal';
-            petal.style.left = Math.random() * CANVAS_W + 'px';
-            petal.style.top = '-20px';
-            petal.style.animationDuration = (Math.random() * 4 + 6) + 's';
-            document.getElementById('screen' + currentScreen).appendChild(petal);
-            setTimeout(() => petal.remove(), 10000);
+        // Seal click
+        function sealClick(el) {
+            el.classList.add('glow');
+            setTimeout(() => goTo(2), 1000);
         }
 
-        // Auto petals
+        // Ripple
+        function addRipple(parent) {
+            const r = document.createElement('div');
+            r.className = 'ripple';
+            parent.appendChild(r);
+            setTimeout(() => r.remove(), 1500);
+        }
+
+        // Lamp
+        function toggleLamp(el) {
+            el.classList.toggle('on');
+        }
+
+        // Bubble
+        function showBubble(parent) {
+            if (parent.querySelector('.s3-bubble')) return;
+            const b = document.createElement('div');
+            b.className = 's3-bubble';
+            b.textContent = '今天的饭，也要吃得暖乎乎的呀✨';
+            parent.appendChild(b);
+            setTimeout(() => b.remove(), 3000);
+        }
+
+        // Tags
+        const wishes = [
+            { title: '好好吃饭', text: '愿三餐都热乎，日子也暖乎乎的✨' },
+            { title: '多睡好觉', text: '愿夜晚安静，梦也温柔✨' },
+            { title: '少些焦虑', text: '不用急着成为别人期待里的大人，你现在的样子，就很好✨' },
+            { title: '喜乐暴富', text: '马年暴富，有钱有闲，自在欢喜✨' },
+            { title: '做自己', text: '愿你仍能奔赴喜欢的风景，写喜欢的字，穿喜欢的衣，也永远喜欢此刻的自己✨' }
+        ];
+        function selectTag(i, el) {
+            document.querySelectorAll('.s4-tag').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            const r = document.getElementById('s4Result');
+            r.innerHTML = `<h3>${wishes[i].title}</h3><p>${wishes[i].text}</p>`;
+            r.classList.add('show');
+        }
+
+        // Receive letter
+        function receiveLetter() {
+            document.getElementById('s5Final').classList.add('show');
+        }
+
+        // Music
+        let musicOn = false;
+        function toggleMusic(el) {
+            const audio = document.getElementById('bgm');
+            musicOn = !musicOn;
+            if (musicOn) { audio.play().catch(() => {}); el.textContent = '♪ 音乐：开'; }
+            else { audio.pause(); el.textContent = '♪ 音乐：关'; }
+        }
+
+        // Petals
         setInterval(() => {
-            if (Math.random() > 0.6) createPetal();
+            if (Math.random() > 0.7) {
+                const p = document.createElement('div');
+                p.className = 'petal';
+                p.style.left = Math.random() * 390 + 'px';
+                p.style.top = '-10px';
+                p.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                document.querySelector('.screen.active').appendChild(p);
+                setTimeout(() => p.remove(), 10000);
+            }
         }, 2000);
-
-        // Screen 1: Seal click
-        document.getElementById('sealHitbox').addEventListener('click', function() {
-            this.classList.add('glowing');
-            setTimeout(() => goToScreen(2), 1200);
-        });
-
-        // Screen 2: Water ripple
-        document.getElementById('waterHitbox').addEventListener('click', function() {
-            const existing = document.querySelector('.ripple-effect');
-            if (existing) existing.remove();
-            const ripple = document.createElement('div');
-            ripple.className = 'ripple-effect';
-            this.parentElement.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 1500);
-        });
-
-        // Screen 3: Lamp toggle
-        document.getElementById('lampHitbox').addEventListener('click', function() {
-            this.classList.toggle('on');
-            const glow = document.getElementById('lampGlow');
-            glow.style.display = this.classList.contains('on') ? 'block' : 'none';
-        });
-
-        // Screen 3: Dish click
-        document.getElementById('dish1').addEventListener('click', function() {
-            this.classList.toggle('active');
-        });
-        document.getElementById('dish2').addEventListener('click', function() {
-            this.classList.toggle('active');
-        });
-
-        // Screen 4: Tag click
-        document.querySelectorAll('.tag-hitbox').forEach(tag => {
-            tag.addEventListener('click', function() {
-                document.querySelectorAll('.tag-hitbox').forEach(t => t.classList.remove('active'));
-                this.classList.toggle('active');
-            });
-        });
-
-        // Screen 5: Button click
-        document.getElementById('buttonHitbox').addEventListener('click', function() {
-            this.style.display = 'none';
-            const overlay = document.createElement('div');
-            overlay.className = 'final-overlay';
-            overlay.innerHTML = '<span>愿你每天都有小开心 ✨</span>';
-            document.getElementById('screen5').appendChild(overlay);
-        });
-
-        // Arrow navigation
-        document.querySelectorAll('.arrow-hitbox').forEach(arrow => {
-            arrow.addEventListener('click', function() {
-                const next = this.getAttribute('data-next');
-                if (next) goToScreen(parseInt(next));
-            });
-        });
-
-        // Music toggle
-        document.querySelectorAll('.music-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const audio = document.getElementById('bgm');
-                musicPlaying = !musicPlaying;
-                if (musicPlaying) {
-                    audio.play().catch(() => {});
-                    this.innerHTML = `
-                        <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 18V5l12-2v13"></path>
-                            <circle cx="6" cy="18" r="3"></circle>
-                            <circle cx="18" cy="16" r="3"></circle>
-                        </svg>
-                        音乐：开
-                    `;
-                } else {
-                    audio.pause();
-                    this.innerHTML = `
-                        <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 18V5l12-2v13"></path>
-                            <circle cx="6" cy="18" r="3"></circle>
-                            <circle cx="18" cy="16" r="3"></circle>
-                        </svg>
-                        音乐：关
-                    `;
-                }
-            });
-        });
     </script>
 </body>
 </html>
