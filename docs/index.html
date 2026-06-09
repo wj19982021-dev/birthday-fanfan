@@ -1,23 +1,404 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/birthday-fanfan/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="theme-color" content="#f6efe1" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="description" content="风起小笺 - 给小范同学的一份生日祝福" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>风起小笺</title>
     <style>
-      /* Prevent FOUC */
-      body { background: #f6efe1; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #1a1510;
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        .app {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .canvas {
+            position: relative;
+            width: 946px;
+            height: 2048px;
+            transform-origin: top left;
+            overflow: hidden;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 946px;
+            height: 2048px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .screen-bg {
+            width: 946px;
+            height: 2048px;
+            object-fit: fill;
+            display: block;
+        }
+
+        /* 交互区域 */
+        .hitbox {
+            position: absolute;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Screen 1: 印章 */
+        .seal-hitbox {
+            left: 420px;
+            top: 1245px;
+            width: 260px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,180,80,0.2) 0%, transparent 70%);
+            transition: all 0.3s ease;
+        }
+
+        .seal-hitbox:hover {
+            background: radial-gradient(circle, rgba(255,180,80,0.4) 0%, transparent 70%);
+        }
+
+        .seal-hitbox.glowing {
+            animation: sealGlow 1.2s ease-out forwards;
+        }
+
+        @keyframes sealGlow {
+            0% {
+                background: radial-gradient(circle, rgba(255,180,80,0.3) 0%, transparent 70%);
+                box-shadow: 0 0 0 rgba(255,180,80,0);
+            }
+            50% {
+                background: radial-gradient(circle, rgba(255,200,100,0.6) 0%, transparent 70%);
+                box-shadow: 0 0 60px rgba(255,200,100,0.6);
+            }
+            100% {
+                background: radial-gradient(circle, rgba(255,220,150,0.8) 0%, transparent 70%);
+                box-shadow: 0 0 100px rgba(255,220,150,0.8);
+                transform: scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Screen 2: 湖面 + 卡片 */
+        .water-hitbox {
+            left: 100px;
+            top: 1050px;
+            width: 300px;
+            height: 180px;
+            border-radius: 50%;
+        }
+
+        .ripple-effect {
+            position: absolute;
+            left: 100px;
+            top: 1050px;
+            width: 300px;
+            height: 180px;
+            border-radius: 50%;
+            border: 2px solid rgba(139,164,176,0.5);
+            pointer-events: none;
+            animation: rippleExpand 1.5s ease-out forwards;
+        }
+
+        @keyframes rippleExpand {
+            0% { transform: scale(0.3); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        .card-hitbox {
+            width: 280px;
+            height: 330px;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .card-hitbox:hover {
+            transform: translateY(-8px);
+        }
+
+        .card-1 { left: 40px; top: 1510px; }
+        .card-2 { left: 335px; top: 1510px; }
+        .card-3 { left: 630px; top: 1510px; }
+
+        /* Screen 3: 台灯 + 菜品 */
+        .lamp-hitbox {
+            left: 700px;
+            top: 650px;
+            width: 200px;
+            height: 420px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .lamp-hitbox.on {
+            background: radial-gradient(circle, rgba(255,200,100,0.35) 0%, transparent 70%);
+            box-shadow: 0 0 80px rgba(255,200,100,0.3);
+        }
+
+        .dish-hitbox {
+            width: 270px;
+            height: 185px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .dish-hitbox:hover {
+            transform: scale(1.05);
+        }
+
+        .dish-hitbox.active {
+            animation: dishBounce 0.4s ease;
+        }
+
+        @keyframes dishBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .dish-1 { left: 340px; top: 1480px; }
+        .dish-2 { left: 620px; top: 1440px; }
+
+        /* Screen 4: 签牌 */
+        .tag-hitbox {
+            width: 145px;
+            height: 590px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .tag-hitbox:hover {
+            transform: translateY(-8px);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .tag-hitbox.active {
+            animation: tagBounce 0.5s ease;
+            background: rgba(255,255,255,0.12);
+        }
+
+        @keyframes tagBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .t1 { left: 80px; top: 555px; }
+        .t2 { left: 260px; top: 555px; }
+        .t3 { left: 440px; top: 555px; }
+        .t4 { left: 620px; top: 555px; }
+        .t5 { left: 800px; top: 555px; }
+
+        /* Screen 5: 按钮 */
+        .button-hitbox {
+            left: 260px;
+            top: 1390px;
+            width: 480px;
+            height: 120px;
+            border-radius: 12px;
+            animation: btnPulse 2s ease-in-out infinite;
+        }
+
+        .button-hitbox:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes btnPulse {
+            0%, 100% { box-shadow: 0 0 0 rgba(200,160,80,0); }
+            50% { box-shadow: 0 0 30px rgba(200,160,80,0.3); }
+        }
+
+        .final-overlay {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 946px;
+            height: 2048px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(246,239,225,0.85);
+            animation: fadeIn 0.8s ease;
+        }
+
+        .final-overlay span {
+            font-size: 42px;
+            color: #2f2a24;
+            font-family: "STKaiti", "KaiTi", serif;
+            letter-spacing: 4px;
+            animation: scaleIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .arrow-hitbox {
+            left: 440px;
+            top: 1920px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
-    <script type="module" crossorigin src="/birthday-fanfan/assets/index-CkEp_sFe.js"></script>
-    <link rel="stylesheet" crossorigin href="/birthday-fanfan/assets/index-C2iFT_gX.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+</head>
+<body>
+    <div class="app">
+        <div class="canvas" id="canvas">
+            <!-- Screen 1 -->
+            <div class="screen active" id="screen1">
+                <img src="assets/screens/screen-1-bg.png" alt="" class="screen-bg">
+                <div class="hitbox seal-hitbox" id="sealHitbox"></div>
+            </div>
+
+            <!-- Screen 2 -->
+            <div class="screen" id="screen2">
+                <img src="assets/screens/screen-2-bg.png" alt="" class="screen-bg">
+                <div class="hitbox water-hitbox" id="waterHitbox"></div>
+                <div class="hitbox card-hitbox card-1"></div>
+                <div class="hitbox card-hitbox card-2"></div>
+                <div class="hitbox card-hitbox card-3"></div>
+                <div class="hitbox arrow-hitbox" data-next="3"></div>
+            </div>
+
+            <!-- Screen 3 -->
+            <div class="screen" id="screen3">
+                <img src="assets/screens/screen-3-bg.png" alt="" class="screen-bg">
+                <div class="hitbox lamp-hitbox" id="lampHitbox"></div>
+                <div class="hitbox dish-hitbox dish-1" id="dish1"></div>
+                <div class="hitbox dish-hitbox dish-2" id="dish2"></div>
+                <div class="hitbox arrow-hitbox" data-next="4"></div>
+            </div>
+
+            <!-- Screen 4 -->
+            <div class="screen" id="screen4">
+                <img src="assets/screens/screen-4-bg.png" alt="" class="screen-bg">
+                <div class="hitbox tag-hitbox t1" data-tag="1"></div>
+                <div class="hitbox tag-hitbox t2" data-tag="2"></div>
+                <div class="hitbox tag-hitbox t3" data-tag="3"></div>
+                <div class="hitbox tag-hitbox t4" data-tag="4"></div>
+                <div class="hitbox tag-hitbox t5" data-tag="5"></div>
+                <div class="hitbox arrow-hitbox" data-next="5"></div>
+            </div>
+
+            <!-- Screen 5 -->
+            <div class="screen" id="screen5">
+                <img src="assets/screens/screen-5-bg.png" alt="" class="screen-bg">
+                <div class="hitbox button-hitbox" id="buttonHitbox"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CANVAS_W = 946;
+        const CANVAS_H = 2048;
+
+        // 缩放画布
+        function updateScale() {
+            const canvas = document.getElementById('canvas');
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const scaleX = vw / CANVAS_W;
+            const scaleY = vh / CANVAS_H;
+            const scale = Math.min(scaleX, scaleY);
+            canvas.style.transform = `scale(${scale})`;
+            canvas.style.marginLeft = `${(vw - CANVAS_W * scale) / 2}px`;
+            canvas.style.marginTop = `${(vh - CANVAS_H * scale) / 2}px`;
+        }
+        updateScale();
+        window.addEventListener('resize', updateScale);
+
+        // 切换屏幕
+        function goToScreen(num) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen' + num).classList.add('active');
+        }
+
+        // Screen 1: 印章点击
+        document.getElementById('sealHitbox').addEventListener('click', function() {
+            this.classList.add('glowing');
+            setTimeout(() => goToScreen(2), 1200);
+        });
+
+        // Screen 2: 湖面涟漪
+        document.getElementById('waterHitbox').addEventListener('click', function() {
+            const existing = document.querySelector('.ripple-effect');
+            if (existing) existing.remove();
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple-effect';
+            this.parentElement.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 1500);
+        });
+
+        // Screen 3: 台灯开关
+        document.getElementById('lampHitbox').addEventListener('click', function() {
+            this.classList.toggle('on');
+        });
+
+        // Screen 3: 菜品点击
+        document.getElementById('dish1').addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+        document.getElementById('dish2').addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+
+        // Screen 4: 签牌点击
+        document.querySelectorAll('.tag-hitbox').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('.tag-hitbox').forEach(t => t.classList.remove('active'));
+                this.classList.toggle('active');
+            });
+        });
+
+        // Screen 5: 按钮点击
+        document.getElementById('buttonHitbox').addEventListener('click', function() {
+            this.style.display = 'none';
+            const overlay = document.createElement('div');
+            overlay.className = 'final-overlay';
+            overlay.innerHTML = '<span>愿你每天都有小开心 ✨</span>';
+            document.getElementById('screen5').appendChild(overlay);
+        });
+
+        // 箭头导航
+        document.querySelectorAll('.arrow-hitbox').forEach(arrow => {
+            arrow.addEventListener('click', function() {
+                const next = this.getAttribute('data-next');
+                if (next) goToScreen(parseInt(next));
+            });
+        });
+    </script>
+</body>
 </html>
