@@ -32,16 +32,6 @@
         .loading h1 { font-size: 42px; color: var(--ink); letter-spacing: 8px; margin-bottom: 16px; }
         .loading p { font-size: 14px; color: var(--ink-soft); letter-spacing: 4px; }
 
-        /* Screen - 全屏 */
-        .screen {
-            position: fixed; inset: 0;
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-            overflow-y: auto; overflow-x: hidden;
-            background: var(--paper);
-        }
-        .screen.active { opacity: 1; visibility: visible; }
-
         /* Music Button */
         .music {
             position: fixed; top: 16px; right: 16px; z-index: 100;
@@ -49,73 +39,80 @@
             background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
             border: 1px solid rgba(184,145,75,0.2);
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 18px;
+            cursor: pointer;
         }
-        .music svg { width: 20px; height: 20px; }
-        .music.playing svg { animation: spin 2s linear infinite; }
+        .music svg { width: 20px; height: 20px; color: var(--ink-soft); }
+        .music.playing svg { animation: spin 2s linear infinite; color: var(--gold); }
         .music .slash {
-            position: absolute; width: 24px; height: 2px;
+            position: absolute; width: 22px; height: 2px;
             background: var(--ink-soft); transform: rotate(-45deg);
         }
-
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* ====== Scene 1: 启封 ====== */
-        .s1 {
-            min-height: 100vh; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 40px 32px; position: relative;
-            background: linear-gradient(180deg, #d8d0c0 0%, #e8e0d0 30%, var(--paper) 60%, #c8d0c8 100%);
+        /* Pages Container */
+        .pages {
+            width: 100%; height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .s1::before {
+
+        /* Each Page */
+        .page {
+            width: 100%; height: 100vh;
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        /* ====== Page 1: 启封 ====== */
+        .p1 {
+            background: linear-gradient(180deg, #d8d0c0 0%, #e8e0d0 30%, var(--paper) 60%, #c8d0c8 100%);
+            padding: 40px 32px;
+        }
+        .p1::before {
             content: ''; position: absolute; bottom: 25%; left: 0; right: 0; height: 120px;
             background:
                 radial-gradient(ellipse 100px 80px at 15% 100%, rgba(100,120,100,0.2), transparent),
                 radial-gradient(ellipse 130px 90px at 45% 100%, rgba(100,120,100,0.15), transparent),
                 radial-gradient(ellipse 90px 70px at 75% 100%, rgba(100,120,100,0.12), transparent);
         }
-        .s1::after {
+        .p1::after {
             content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 28%;
             background: linear-gradient(180deg, transparent, rgba(180,200,190,0.25));
         }
-        .s1-title {
+        .p1-title {
             text-align: center; animation: fadeUp 1s ease 0.5s both;
             position: relative; z-index: 1;
         }
-        .s1-title .name { font-size: 20px; color: var(--ink-soft); letter-spacing: 4px; }
-        .s1-title h1 { font-size: 48px; color: var(--ink); letter-spacing: 6px; margin: 12px 0; font-weight: 900; }
-        .s1-title .wish { font-size: 15px; color: var(--ink-soft); line-height: 2; letter-spacing: 2px; margin-top: 24px; }
-        .s1-seal {
+        .p1-title .name { font-size: 20px; color: var(--ink-soft); letter-spacing: 4px; }
+        .p1-title h1 { font-size: 48px; color: var(--ink); letter-spacing: 6px; margin: 12px 0; font-weight: 900; }
+        .p1-title .wish { font-size: 15px; color: var(--ink-soft); line-height: 2; letter-spacing: 2px; margin-top: 24px; }
+        .p1-seal {
             width: 64px; height: 64px; border: 3px solid var(--seal-red); border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
             font-size: 26px; color: var(--seal-red); font-weight: bold;
             margin-top: 40px; cursor: pointer; position: relative; z-index: 1;
             animation: fadeIn 1s ease 1s both;
         }
-        .s1-seal:active { transform: scale(0.95); }
-        .s1-seal.glow { animation: sealGlow 1s ease forwards; }
+        .p1-seal.glow { animation: sealGlow 1s ease forwards; }
         @keyframes sealGlow {
             0% { box-shadow: 0 0 0 rgba(255,200,100,0); }
             50% { box-shadow: 0 0 60px rgba(255,200,100,0.6); transform: scale(1.2); }
             100% { box-shadow: 0 0 100px rgba(255,200,100,0.8); transform: scale(1.4); opacity: 0; }
         }
-        .s1-tip {
+        .p1-tip {
             position: absolute; bottom: 40px; left: 0; right: 0; text-align: center;
-            font-size: 13px; color: var(--ink-soft); letter-spacing: 3px;
-            animation: fadeIn 1s ease 1.2s both; z-index: 1;
+            font-size: 13px; color: var(--ink-soft); letter-spacing: 3px; z-index: 1;
         }
-        .s1-tip::after {
+        .p1-tip::after {
             content: '↑ 向上滑动开启'; display: block; margin-top: 8px; font-size: 12px;
             animation: bounce 1.5s ease-in-out infinite;
         }
 
-        /* ====== Scene 2: 江南 ====== */
-        .s2 {
-            min-height: 100vh; padding: 60px 20px 40px;
+        /* ====== Page 2: 江南 ====== */
+        .p2 {
             background: linear-gradient(180deg, #c8c0b0 0%, #b8c8c0 40%, #a8b8b0 100%);
-            position: relative;
+            padding: 60px 20px 40px; justify-content: flex-start;
         }
-        .s2::before {
+        .p2::before {
             content: ''; position: absolute; inset: 0;
             background:
                 radial-gradient(ellipse 200px 150px at 80% 20%, rgba(100,120,100,0.1), transparent),
@@ -130,45 +127,38 @@
         .willow:nth-child(2) { left: 22%; height: 80px; animation-delay: 0.5s; }
         .willow:nth-child(3) { right: 18%; height: 90px; animation-delay: 1s; }
         @keyframes sway { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
-        .s2-text {
+        .p2-text {
             text-align: center; padding: 40px 0; position: relative; z-index: 1;
             animation: fadeUp 1s ease 0.3s both;
         }
-        .s2-text h2 { font-size: 16px; color: var(--ink); line-height: 2.4; letter-spacing: 2px; font-weight: 400; }
-        .ripple {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-            width: 60px; height: 30px; border: 1.5px solid rgba(139,164,176,0.5);
-            border-radius: 50%; pointer-events: none; animation: rippleExpand 1.5s ease-out forwards;
-        }
-        @keyframes rippleExpand { 0% { transform: translate(-50%,-50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(3); opacity: 0; } }
-        .s2-cards { display: flex; gap: 10px; padding: 0 8px; position: relative; z-index: 1; margin-top: 20px; }
-        .s2-card {
+        .p2-text h2 { font-size: 16px; color: var(--ink); line-height: 2.4; letter-spacing: 2px; font-weight: 400; }
+        .p2-cards { display: flex; gap: 10px; padding: 0 8px; position: relative; z-index: 1; margin-top: auto; }
+        .p2-card {
             flex: 1; background: rgba(255,255,255,0.75); backdrop-filter: blur(8px);
             border-radius: 12px; padding: 14px 8px; text-align: center;
             border: 1px solid rgba(184,145,75,0.2); cursor: pointer;
             transition: transform 0.3s ease; opacity: 0; transform: translateY(30px);
         }
-        .s2-card.show { opacity: 1; transform: translateY(0); }
-        .s2-card:active { transform: scale(0.97); }
-        .s2-card h3 { font-size: 13px; color: var(--ink); margin-bottom: 6px; }
-        .s2-card p { font-size: 11px; color: var(--ink-soft); line-height: 1.6; }
-        .s2-hint {
-            text-align: center; padding: 30px 0; font-size: 12px; color: var(--ink-soft);
+        .p2-card.show { opacity: 1; transform: translateY(0); }
+        .p2-card:active { transform: scale(0.97); }
+        .p2-card h3 { font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+        .p2-card p { font-size: 11px; color: var(--ink-soft); line-height: 1.6; }
+        .p2-hint {
+            text-align: center; padding: 20px 0; font-size: 12px; color: var(--ink-soft);
             letter-spacing: 2px; position: relative; z-index: 1;
         }
 
-        /* ====== Scene 3: 烟火 ====== */
-        .s3 {
-            min-height: 100vh; padding: 60px 24px 40px;
+        /* ====== Page 3: 烟火 ====== */
+        .p3 {
             background: linear-gradient(180deg, #252a35 0%, #353a48 50%, #454a58 100%);
-            position: relative; display: flex; flex-direction: column; align-items: center;
+            padding: 60px 24px 40px; justify-content: center;
         }
-        .s3-window {
+        .p3-window {
             position: absolute; top: 8%; left: 50%; transform: translateX(-50%);
             width: 150px; height: 170px; border: 2px solid rgba(139,115,85,0.3);
             border-radius: 75px 75px 0 0; overflow: hidden;
         }
-        .s3-window::before {
+        .p3-window::before {
             content: ''; position: absolute; inset: 0;
             background: linear-gradient(180deg, #151a25, #253040 60%, rgba(232,201,130,0.12));
         }
@@ -177,37 +167,36 @@
             border-radius: 50%; animation: twinkle 2s ease-in-out infinite;
         }
         @keyframes twinkle { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
-        .s3-lamp {
+        .p3-lamp {
             position: absolute; top: 32%; right: 10%; width: 45px; height: 90px; cursor: pointer;
         }
-        .s3-lamp::before {
+        .p3-lamp::before {
             content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
             width: 32px; height: 24px; background: var(--gold); border-radius: 0 0 50% 50%;
         }
-        .s3-lamp::after {
+        .p3-lamp::after {
             content: ''; position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
             width: 3px; height: 45px; background: #8b7355;
         }
-        .s3-lamp .glow {
+        .p3-lamp .glow {
             position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
             width: 90px; height: 90px; border-radius: 50%;
             background: radial-gradient(circle, rgba(232,201,130,0.35), transparent);
             opacity: 0; transition: opacity 0.5s ease; animation: breathe 3s ease-in-out infinite;
         }
-        .s3-lamp.on .glow { opacity: 1; }
+        .p3-lamp.on .glow { opacity: 1; }
         @keyframes breathe { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.1); } }
-        .s3-text {
-            flex: 1; display: flex; align-items: center; justify-content: center;
+        .p3-text {
             text-align: center; animation: fadeUp 1s ease 0.3s both;
             position: relative; z-index: 1; padding: 40px 0;
         }
-        .s3-text h2 { font-size: 16px; color: #f6efe1; line-height: 2.4; letter-spacing: 2px; font-weight: 400; }
-        .s3-tip {
+        .p3-text h2 { font-size: 16px; color: #f6efe1; line-height: 2.4; letter-spacing: 2px; font-weight: 400; }
+        .p3-tip {
             text-align: center; font-size: 12px; color: rgba(246,239,225,0.7);
             letter-spacing: 2px; padding: 12px 0; cursor: pointer;
-            animation: fadeIn 1s ease 0.8s both; position: relative; z-index: 1;
+            position: relative; z-index: 1;
         }
-        .s3-bubble {
+        .p3-bubble {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
             background: rgba(255,255,255,0.95); border-radius: 16px;
             padding: 16px 20px; font-size: 14px; color: var(--ink);
@@ -215,44 +204,43 @@
             animation: bubblePop 0.4s ease;
         }
         @keyframes bubblePop { 0% { transform: translate(-50%,-50%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%,-50%) scale(1); opacity: 1; } }
-        .s3-hint {
+        .p3-hint {
             text-align: center; padding: 20px 0; font-size: 12px; color: rgba(246,239,225,0.6);
             letter-spacing: 2px; position: relative; z-index: 1;
         }
 
-        /* ====== Scene 4: 愿望签 ====== */
-        .s4 {
-            min-height: 100vh; padding: 60px 16px 40px;
+        /* ====== Page 4: 愿望签 ====== */
+        .p4 {
             background: linear-gradient(180deg, var(--paper) 0%, #ede5d5 100%);
-            position: relative; display: flex; flex-direction: column; align-items: center;
+            padding: 60px 16px 40px; justify-content: center;
         }
-        .s4::before {
+        .p4::before {
             content: ''; position: absolute; inset: 0;
             background: radial-gradient(ellipse 200px 200px at 50% 30%, rgba(184,145,75,0.06), transparent);
             pointer-events: none;
         }
-        .s4-title { text-align: center; animation: fadeUp 1s ease 0.3s both; margin-bottom: 24px; position: relative; z-index: 1; }
-        .s4-title h2 { font-size: 18px; color: var(--ink); letter-spacing: 4px; font-weight: 400; line-height: 1.8; }
-        .s4-tags { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; position: relative; z-index: 1; }
-        .s4-tag {
+        .p4-title { text-align: center; animation: fadeUp 1s ease 0.3s both; margin-bottom: 24px; position: relative; z-index: 1; }
+        .p4-title h2 { font-size: 18px; color: var(--ink); letter-spacing: 4px; font-weight: 400; line-height: 1.8; }
+        .p4-tags { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; position: relative; z-index: 1; }
+        .p4-tag {
             width: 56px; height: 220px; background: linear-gradient(180deg, #f5f0e8, #ede5d5);
             border-radius: 6px; border: 1px solid rgba(184,145,75,0.2);
             display: flex; flex-direction: column; align-items: center;
             padding-top: 20px; cursor: pointer; transition: all 0.3s ease; position: relative;
         }
-        .s4-tag::before {
+        .p4-tag::before {
             content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
             width: 18px; height: 14px; background: var(--gold); border-radius: 3px;
         }
-        .s4-tag::after {
+        .p4-tag::after {
             content: ''; position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%);
             width: 2px; height: 16px; background: var(--gold); opacity: 0.4;
         }
-        .s4-tag:active { transform: translateY(-8px); }
-        .s4-tag.active { transform: translateY(-12px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
-        .s4-tag .icon { font-size: 22px; margin-bottom: 10px; }
-        .s4-tag .label { font-size: 10px; color: var(--ink-soft); writing-mode: vertical-rl; letter-spacing: 2px; }
-        .s4-result {
+        .p4-tag:active { transform: translateY(-8px); }
+        .p4-tag.active { transform: translateY(-12px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+        .p4-tag .icon { font-size: 22px; margin-bottom: 10px; }
+        .p4-tag .label { font-size: 10px; color: var(--ink-soft); writing-mode: vertical-rl; letter-spacing: 2px; }
+        .p4-result {
             background: rgba(255,255,255,0.85); backdrop-filter: blur(10px);
             border-radius: 16px; padding: 24px; text-align: center; width: 100%;
             border: 1px solid rgba(184,145,75,0.2); min-height: 100px;
@@ -260,50 +248,48 @@
             opacity: 0; transform: translateY(15px); transition: all 0.4s ease;
             position: relative; z-index: 1;
         }
-        .s4-result.show { opacity: 1; transform: translateY(0); }
-        .s4-result h3 { font-size: 18px; color: var(--ink); margin-bottom: 10px; }
-        .s4-result p { font-size: 14px; color: var(--ink-soft); line-height: 1.8; }
-        .s4-default { font-size: 13px; color: var(--ink-soft); letter-spacing: 2px; }
-        .s4-hint {
-            text-align: center; padding: 30px 0 0; font-size: 12px; color: var(--ink-soft);
+        .p4-result.show { opacity: 1; transform: translateY(0); }
+        .p4-result h3 { font-size: 18px; color: var(--ink); margin-bottom: 10px; }
+        .p4-result p { font-size: 14px; color: var(--ink-soft); line-height: 1.8; }
+        .p4-default { font-size: 13px; color: var(--ink-soft); letter-spacing: 2px; }
+        .p4-hint {
+            text-align: center; padding: 20px 0 0; font-size: 12px; color: var(--ink-soft);
             letter-spacing: 2px; position: relative; z-index: 1;
         }
 
-        /* ====== Scene 5: 收信 ====== */
-        .s5 {
-            min-height: 100vh; padding: 60px 20px 40px;
+        /* ====== Page 5: 收信 ====== */
+        .p5 {
             background: linear-gradient(180deg, var(--paper) 0%, #e8e0d0 100%);
-            position: relative; display: flex; flex-direction: column; align-items: center;
+            padding: 60px 20px 40px; justify-content: center;
         }
-        .s5-letter {
+        .p5-letter {
             background: #fff; border-radius: 12px; padding: 28px 20px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.08);
             border: 1px solid rgba(184,145,75,0.15); width: 100%;
-            animation: fadeUp 1s ease 0.3s both; flex: 1;
-            display: flex; flex-direction: column; justify-content: center;
+            animation: fadeUp 1s ease 0.3s both;
         }
-        .s5-letter h2 { font-size: 20px; color: var(--ink); text-align: center; margin-bottom: 20px; letter-spacing: 3px; }
-        .s5-letter p { font-size: 15px; color: var(--ink-soft); line-height: 2.2; text-align: center; letter-spacing: 1px; }
-        .s5-btn {
+        .p5-letter h2 { font-size: 20px; color: var(--ink); text-align: center; margin-bottom: 20px; letter-spacing: 3px; }
+        .p5-letter p { font-size: 15px; color: var(--ink-soft); line-height: 2.2; text-align: center; letter-spacing: 1px; }
+        .p5-btn {
             margin: 20px 0; background: var(--gold); color: #fff; border: none;
             padding: 14px 40px; border-radius: 30px; font-size: 15px;
             letter-spacing: 3px; cursor: pointer; transition: all 0.3s ease;
             animation: btnGlow 2s ease-in-out infinite;
         }
-        .s5-btn:active { transform: scale(0.96); }
+        .p5-btn:active { transform: scale(0.96); }
         @keyframes btnGlow {
             0%,100% { box-shadow: 0 0 0 rgba(184,145,75,0); }
             50% { box-shadow: 0 0 25px rgba(184,145,75,0.4); }
         }
-        .s5-final {
+        .p5-final {
             position: fixed; inset: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             background: rgba(246,239,225,0.95); z-index: 500;
             opacity: 0; pointer-events: none; transition: opacity 0.8s ease;
         }
-        .s5-final.show { opacity: 1; pointer-events: all; }
-        .s5-final h2 { font-size: 28px; color: var(--ink); letter-spacing: 4px; animation: scaleIn 0.8s ease; }
-        .s5-final p { font-size: 14px; color: var(--ink-soft); margin-top: 16px; letter-spacing: 3px; animation: fadeUp 0.8s ease 0.3s both; }
+        .p5-final.show { opacity: 1; pointer-events: all; }
+        .p5-final h2 { font-size: 28px; color: var(--ink); letter-spacing: 4px; animation: scaleIn 0.8s ease; }
+        .p5-final p { font-size: 14px; color: var(--ink-soft); margin-top: 16px; letter-spacing: 3px; animation: fadeUp 0.8s ease 0.3s both; }
 
         /* Petal */
         .petal {
@@ -330,7 +316,7 @@
         <p>正在送达……</p>
     </div>
 
-    <!-- Music Button - 固定位置 -->
+    <!-- Music Button -->
     <div class="music" id="musicBtn" onclick="toggleMusic()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M9 18V5l12-2v13"></path>
@@ -340,101 +326,104 @@
         <div class="slash" id="musicSlash"></div>
     </div>
 
-    <!-- Screen 1: 启封 -->
-    <div class="screen s1 active" id="screen1">
-        <div class="s1-title">
-            <div class="name">小范同学，</div>
-            <h1>生日快乐</h1>
-            <div class="wish">愿新的一岁，<br>日子有光，心里有风，<br>饭菜热乎，梦也安稳。</div>
+    <!-- Pages Container -->
+    <div class="pages" id="pages">
+        <!-- Page 1: 启封 -->
+        <div class="page p1" id="page1">
+            <div class="p1-title">
+                <div class="name">小范同学，</div>
+                <h1>生日快乐</h1>
+                <div class="wish">愿新的一岁，<br>日子有光，心里有风，<br>饭菜热乎，梦也安稳。</div>
+            </div>
+            <div class="p1-seal" onclick="sealClick(this)">印</div>
+            <div class="p1-tip">轻轻点一下，拆开这份小笺</div>
         </div>
-        <div class="s1-seal" onclick="sealClick(this)">印</div>
-        <div class="s1-tip">轻轻点一下，拆开这份小笺</div>
-    </div>
 
-    <!-- Screen 2: 江南 -->
-    <div class="screen s2" id="screen2">
-        <div class="willow"></div><div class="willow"></div><div class="willow"></div>
-        <div class="s2-text">
-            <h2>愿你依旧喜欢江南的风，<br>喜欢那些慢慢走过的四季，<br>也喜欢那个认真生活的自己。<br><br>有些风景不必赶路，<br>慢慢看，就很好。</h2>
+        <!-- Page 2: 江南 -->
+        <div class="page p2" id="page2">
+            <div class="willow"></div><div class="willow"></div><div class="willow"></div>
+            <div class="p2-text">
+                <h2>愿你依旧喜欢江南的风，<br>喜欢那些慢慢走过的四季，<br>也喜欢那个认真生活的自己。<br><br>有些风景不必赶路，<br>慢慢看，就很好。</h2>
+            </div>
+            <div class="p2-cards">
+                <div class="p2-card"><h3>长桥风起</h3><p>风过桥头，愿你前路都有温柔相送。</p></div>
+                <div class="p2-card"><h3>柳下听风</h3><p>风拂柳枝，愿你心里的事，慢慢被吹轻。</p></div>
+                <div class="p2-card"><h3>湖边小晴天</h3><p>寻常日子里，也总有一点点小晴朗。</p></div>
+            </div>
+            <div class="p2-hint">↑ 向上滑动继续</div>
         </div>
-        <div class="s2-cards">
-            <div class="s2-card" data-delay="0"><h3>长桥风起</h3><p>风过桥头，愿你前路都有温柔相送。</p></div>
-            <div class="s2-card" data-delay="200"><h3>柳下听风</h3><p>风拂柳枝，愿你心里的事，慢慢被吹轻。</p></div>
-            <div class="s2-card" data-delay="400"><h3>湖边小晴天</h3><p>寻常日子里，也总有一点点小晴朗。</p></div>
-        </div>
-        <div class="s2-hint">↑ 向上滑动继续</div>
-    </div>
 
-    <!-- Screen 3: 烟火 -->
-    <div class="screen s3" id="screen3">
-        <div class="s3-window"></div>
-        <div class="star" style="top:12%;left:30%;animation-delay:0s;"></div>
-        <div class="star" style="top:15%;left:60%;animation-delay:0.5s;"></div>
-        <div class="star" style="top:10%;left:75%;animation-delay:1s;"></div>
-        <div class="s3-lamp" onclick="toggleLamp(this)"><div class="glow"></div></div>
-        <div class="s3-text">
-            <h2>愿每餐都有滋有味，<br>每个日子都值得期待。<br><br>愿寻常的日子里，<br>总有一两件值得期待的小事。<br><br>好好吃饭，<br>好好睡觉，<br>慢慢开心。</h2>
+        <!-- Page 3: 烟火 -->
+        <div class="page p3" id="page3">
+            <div class="p3-window"></div>
+            <div class="star" style="top:12%;left:30%;animation-delay:0s;"></div>
+            <div class="star" style="top:15%;left:60%;animation-delay:0.5s;"></div>
+            <div class="star" style="top:10%;left:75%;animation-delay:1s;"></div>
+            <div class="p3-lamp" onclick="toggleLamp(this)"><div class="glow"></div></div>
+            <div class="p3-text">
+                <h2>愿每餐都有滋有味，<br>每个日子都值得期待。<br><br>愿寻常的日子里，<br>总有一两件值得期待的小事。<br><br>好好吃饭，<br>好好睡觉，<br>慢慢开心。</h2>
+            </div>
+            <div class="p3-tip" onclick="showBubble()">悄悄点一下，会有小惊喜哦✨</div>
+            <div class="p3-hint">↑ 向上滑动继续</div>
         </div>
-        <div class="s3-tip" onclick="showBubble()">悄悄点一下，会有小惊喜哦✨</div>
-        <div class="s3-hint">↑ 向上滑动继续</div>
-    </div>
 
-    <!-- Screen 4: 愿望签 -->
-    <div class="screen s4" id="screen4">
-        <div class="s4-title"><h2>愿你新的一岁，<br>心想事成，万事顺意。</h2></div>
-        <div class="s4-tags">
-            <div class="s4-tag" onclick="selectTag(0,this)"><div class="icon">🍚</div><div class="label">好好吃饭</div></div>
-            <div class="s4-tag" onclick="selectTag(1,this)"><div class="icon">😴</div><div class="label">多睡好觉</div></div>
-            <div class="s4-tag" onclick="selectTag(2,this)"><div class="icon">☁️</div><div class="label">少些焦虑</div></div>
-            <div class="s4-tag" onclick="selectTag(3,this)"><div class="icon">🎊</div><div class="label">喜乐暴富</div></div>
-            <div class="s4-tag" onclick="selectTag(4,this)"><div class="icon">🌸</div><div class="label">做自己</div></div>
+        <!-- Page 4: 愿望签 -->
+        <div class="page p4" id="page4">
+            <div class="p4-title"><h2>愿你新的一岁，<br>心想事成，万事顺意。</h2></div>
+            <div class="p4-tags">
+                <div class="p4-tag" onclick="selectTag(0,this)"><div class="icon">🍚</div><div class="label">好好吃饭</div></div>
+                <div class="p4-tag" onclick="selectTag(1,this)"><div class="icon">😴</div><div class="label">多睡好觉</div></div>
+                <div class="p4-tag" onclick="selectTag(2,this)"><div class="icon">☁️</div><div class="label">少些焦虑</div></div>
+                <div class="p4-tag" onclick="selectTag(3,this)"><div class="icon">🎊</div><div class="label">喜乐暴富</div></div>
+                <div class="p4-tag" onclick="selectTag(4,this)"><div class="icon">🌸</div><div class="label">做自己</div></div>
+            </div>
+            <div class="p4-result" id="p4Result"><div class="p4-default">轻轻点一枚愿望签</div></div>
+            <div class="p4-hint">↑ 向上滑动继续</div>
         </div>
-        <div class="s4-result" id="s4Result"><div class="s4-default">轻轻点一枚愿望签</div></div>
-        <div class="s4-hint">↑ 向上滑动继续</div>
-    </div>
 
-    <!-- Screen 5: 收信 -->
-    <div class="screen s5" id="screen5">
-        <div class="s5-letter">
-            <h2>生日快乐，小范同学</h2>
-            <p>今天不说太多啦，<br>就送你一份小祝福，<br>也送你一份慢慢来的心意。<br><br>愿你三十岁，<br>仍有眼里的光，<br>也有此刻的安稳与从容。<br><br>看到这里就好，<br>今天只负责做开心的自己。</p>
-        </div>
-        <button class="s5-btn" onclick="receiveLetter()">收下这份碎碎念 ✨</button>
-        <div class="s5-final" id="s5Final">
-            <h2>愿你每天都有小开心 ✨</h2>
-            <p>生日快乐，小范同学</p>
+        <!-- Page 5: 收信 -->
+        <div class="page p5" id="page5">
+            <div class="p5-letter">
+                <h2>生日快乐，小范同学</h2>
+                <p>今天不说太多啦，<br>就送你一份小祝福，<br>也送你一份慢慢来的心意。<br><br>愿你三十岁，<br>仍有眼里的光，<br>也有此刻的安稳与从容。<br><br>看到这里就好，<br>今天只负责做开心的自己。</p>
+            </div>
+            <button class="p5-btn" onclick="receiveLetter()">收下这份碎碎念 ✨</button>
+            <div class="p5-final" id="p5Final">
+                <h2>愿你每天都有小开心 ✨</h2>
+                <p>生日快乐，小范同学</p>
+            </div>
         </div>
     </div>
 
     <audio id="bgm" loop src="assets/bgm.mp3"></audio>
 
     <script>
-        let currentScreen = 1;
+        let currentPage = 0;
         let musicStarted = false;
         let touchStartY = 0;
+        const totalPages = 5;
 
         // Loading
         setTimeout(() => document.getElementById('loading').classList.add('hidden'), 2000);
 
-        // Go to screen
-        function goTo(n) {
-            if (n < 1 || n > 5) return;
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen' + n).classList.add('active');
-            currentScreen = n;
-            if (n === 2) animateCards();
+        // Go to page
+        function goToPage(n) {
+            if (n < 0 || n >= totalPages) return;
+            currentPage = n;
+            document.getElementById('pages').style.transform = `translateY(-${n * 100}vh)`;
+            if (n === 1) animateCards();
         }
 
         // Seal click
         function sealClick(el) {
             startMusic();
             el.classList.add('glow');
-            setTimeout(() => goTo(2), 1000);
+            setTimeout(() => goToPage(1), 1000);
         }
 
         // Cards animate
         function animateCards() {
-            document.querySelectorAll('.s2-card').forEach((card, i) => {
+            document.querySelectorAll('.p2-card').forEach((card, i) => {
                 setTimeout(() => card.classList.add('show'), 300 + i * 250);
             });
         }
@@ -444,9 +433,9 @@
 
         // Bubble
         function showBubble() {
-            if (document.querySelector('.s3-bubble')) return;
+            if (document.querySelector('.p3-bubble')) return;
             const b = document.createElement('div');
-            b.className = 's3-bubble';
+            b.className = 'p3-bubble';
             b.textContent = '今天的饭，也要吃得暖乎乎的呀✨';
             document.body.appendChild(b);
             setTimeout(() => b.remove(), 3000);
@@ -461,16 +450,16 @@
             { title: '做自己', text: '愿你仍能奔赴喜欢的风景，写喜欢的字，穿喜欢的衣，也永远喜欢此刻的自己✨' }
         ];
         function selectTag(i, el) {
-            document.querySelectorAll('.s4-tag').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.p4-tag').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
-            const r = document.getElementById('s4Result');
+            const r = document.getElementById('p4Result');
             r.innerHTML = '<h3>' + wishes[i].title + '</h3><p>' + wishes[i].text + '</p>';
             r.classList.add('show');
         }
 
         // Receive
         function receiveLetter() {
-            document.getElementById('s5Final').classList.add('show');
+            document.getElementById('p5Final').classList.add('show');
         }
 
         // Music
@@ -513,11 +502,11 @@
             const diff = touchStartY - e.changedTouches[0].clientY;
             if (diff > 50) {
                 startMusic();
-                if (currentScreen === 1) {
-                    const seal = document.querySelector('.s1-seal');
+                if (currentPage === 0) {
+                    const seal = document.querySelector('.p1-seal');
                     if (seal && !seal.classList.contains('glow')) sealClick(seal);
-                } else if (currentScreen < 5) {
-                    goTo(currentScreen + 1);
+                } else {
+                    goToPage(currentPage + 1);
                 }
             }
         }, { passive: true });
@@ -528,11 +517,11 @@
         document.addEventListener('mouseup', (e) => {
             if (mouseStartY - e.clientY > 50) {
                 startMusic();
-                if (currentScreen === 1) {
-                    const seal = document.querySelector('.s1-seal');
+                if (currentPage === 0) {
+                    const seal = document.querySelector('.p1-seal');
                     if (seal && !seal.classList.contains('glow')) sealClick(seal);
-                } else if (currentScreen < 5) {
-                    goTo(currentScreen + 1);
+                } else {
+                    goToPage(currentPage + 1);
                 }
             }
         });
@@ -550,7 +539,7 @@
             }
         }, 2500);
 
-        // 初始化：隐藏划掉线
+        // 初始化
         document.getElementById('musicSlash').style.display = 'block';
     </script>
 </body>
