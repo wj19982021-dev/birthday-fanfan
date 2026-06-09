@@ -30,22 +30,8 @@ html, body {
   position: relative;
   width: 946px;
   height: 2048px;
-  transform-origin: top center;
+  transform-origin: top left;
   overflow: hidden;
-}
-
-@media (max-aspect-ratio: 946/2048) {
-  .canvas {
-    transform: scale(calc(100vw / 946));
-    transform-origin: top left;
-  }
-}
-
-@media (min-aspect-ratio: 946/2048) {
-  .canvas {
-    transform: scale(calc(100vh / 2048));
-    transform-origin: top center;
-  }
 }
 
 /* 每一屏 */
