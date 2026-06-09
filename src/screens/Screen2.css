@@ -1,0 +1,130 @@
+/* Screen 2 - 江南与回忆 */
+.screen-2 {
+  z-index: 2;
+}
+
+/* Music button */
+.screen-2 .music-btn {
+  left: 715px;
+  top: 42px;
+  width: 190px;
+  height: 72px;
+}
+
+/* Girl figure */
+.girl {
+  left: 610px;
+  top: 520px;
+  width: 300px;
+  height: 720px;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.3s forwards;
+}
+
+/* Main text */
+.main-text {
+  left: 95px;
+  top: 380px;
+  width: 545px;
+  height: 420px;
+  opacity: 0;
+  animation: slideUp 1s ease 0.5s forwards;
+}
+
+/* Water tip */
+.water-tip {
+  left: 145px;
+  top: 960px;
+  width: 420px;
+  height: 70px;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.8s forwards, pulse 2s ease-in-out 2s infinite;
+}
+
+/* Ripple */
+.ripple {
+  left: 125px;
+  top: 1120px;
+  width: 240px;
+  height: 120px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.ripple:hover {
+  transform: scale(1.05);
+}
+
+/* Ripple active */
+.ripple-active {
+  left: 95px;
+  top: 1080px;
+  width: 310px;
+  height: 180px;
+  animation: pulse 0.5s ease-in-out;
+}
+
+/* Dog */
+.screen-2 .dog {
+  left: 430px;
+  top: 1130px;
+  width: 190px;
+  height: 180px;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.6s forwards;
+}
+
+/* Cards container */
+.cards-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 946px;
+  height: 2048px;
+  pointer-events: none;
+}
+
+/* Card */
+.card {
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  opacity: 0;
+  animation: slideUp 0.8s ease forwards;
+}
+
+.card:nth-child(1) {
+  animation-delay: 1s;
+}
+
+.card:nth-child(2) {
+  animation-delay: 1.2s;
+}
+
+.card:nth-child(3) {
+  animation-delay: 1.4s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  filter: brightness(1.1);
+}
+
+.card-active {
+  animation: pulse 0.5s ease;
+}
+
+/* Down arrow */
+.down-arrow {
+  left: 450px;
+  top: 1940px;
+  width: 55px;
+  height: 55px;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.5s forwards, float 2s ease-in-out 2s infinite;
+}
+
+.down-arrow:hover {
+  transform: scale(1.1);
+}

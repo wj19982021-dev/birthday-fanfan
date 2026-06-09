@@ -1,0 +1,97 @@
+/* Screen 5 - 收信 */
+.screen-5 {
+  z-index: 5;
+}
+
+/* Music button */
+.screen-5 .music-btn {
+  left: 720px;
+  top: 42px;
+  width: 190px;
+  height: 72px;
+}
+
+/* Letter paper */
+.letter-paper {
+  left: 180px;
+  top: 555px;
+  width: 610px;
+  height: 900px;
+  opacity: 0;
+  animation: slideUp 1s ease 0.3s forwards;
+  transition: all 0.5s ease;
+}
+
+.letter-paper.received {
+  left: 170px;
+  top: 540px;
+  width: 630px;
+  height: 930px;
+}
+
+/* Main text */
+.screen-5 .main-text {
+  left: 245px;
+  top: 650px;
+  width: 520px;
+  height: 640px;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.8s forwards;
+}
+
+/* Button */
+.button {
+  left: 280px;
+  top: 1415px;
+  width: 450px;
+  height: 95px;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeIn 1s ease 1s forwards, pulse 2s ease-in-out 2s infinite;
+  transition: transform 0.3s ease;
+}
+
+.button:hover {
+  transform: scale(1.05);
+}
+
+.button.clicked {
+  animation: pulse 0.5s ease;
+}
+
+/* Final note */
+.final-note {
+  left: 330px;
+  top: 1540px;
+  width: 330px;
+  height: 70px;
+  animation: slideUp 0.8s ease;
+}
+
+/* Dog with envelope */
+.dog-envelope {
+  left: 0;
+  top: 1550px;
+  width: 310px;
+  height: 360px;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.5s forwards;
+  transition: all 0.5s ease;
+}
+
+.dog-envelope.active {
+  left: 0;
+  top: 1530px;
+  width: 330px;
+  height: 390px;
+}
+
+/* Inkstone and brush */
+.inkstone-brush {
+  left: 620px;
+  top: 1610px;
+  width: 320px;
+  height: 260px;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.7s forwards;
+}

@@ -1,19 +1,43 @@
+import { useState, useCallback } from 'react'
+import Screen1 from './screens/Screen1'
+import Screen2 from './screens/Screen2'
+import Screen3 from './screens/Screen3'
+import Screen4 from './screens/Screen4'
+import Screen5 from './screens/Screen5'
 import './App.css'
 
 function App() {
+  const [currentScreen, setCurrentScreen] = useState(1)
+  const [showFinal, setShowFinal] = useState(false)
+
+  const goToScreen = useCallback((screen) => {
+    setCurrentScreen(screen)
+  }, [])
+
   return (
-    <div style={{ padding: '40px 20px', textAlign: 'center', minHeight: '100vh', background: '#f6efe1' }}>
-      <h1 style={{ color: '#2f2a24', fontSize: '42px', fontFamily: '"STKaiti", "KaiTi", serif', marginBottom: '20px' }}>
-        风起小笺
-      </h1>
-      <p style={{ color: '#6f6253', fontSize: '16px', lineHeight: '2' }}>
-        给小范同学的一份生日祝福
-      </p>
-      <div style={{ marginTop: '40px', padding: '30px', background: 'white', borderRadius: '8px', maxWidth: '360px', margin: '40px auto' }}>
-        <p style={{ color: '#2f2a24', fontSize: '18px', lineHeight: '2' }}>
-          小范同学，<br/>
-          生日快乐。
-        </p>
+    <div className="app">
+      <div className="canvas">
+        <Screen1
+          isActive={currentScreen === 1}
+          onOpen={() => goToScreen(2)}
+        />
+        <Screen2
+          isActive={currentScreen === 2}
+          onNext={() => goToScreen(3)}
+        />
+        <Screen3
+          isActive={currentScreen === 3}
+          onNext={() => goToScreen(4)}
+        />
+        <Screen4
+          isActive={currentScreen === 4}
+          onNext={() => goToScreen(5)}
+        />
+        <Screen5
+          isActive={currentScreen === 5}
+          onFinal={() => setShowFinal(true)}
+          showFinal={showFinal}
+        />
       </div>
     </div>
   )
