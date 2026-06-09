@@ -1,30 +1,12 @@
-import { useState } from 'react'
-import MusicToggle from './components/MusicToggle'
-import PetalLayer from './components/PetalLayer'
-import SceneIntro from './components/SceneIntro'
-import SceneJiangnan from './components/SceneJiangnan'
-import SceneLife from './components/SceneLife'
-import SceneWishes from './components/SceneWishes'
-import SceneLetter from './components/SceneLetter'
 import './App.css'
 
 function App() {
   return (
-    <div className="app">
-      <PetalLayer active={true} />
-      <MusicToggle />
-
-      <main className="scenes">
-        <SceneIntro />
-        <SceneJiangnan />
-        <SceneLife />
-        <SceneWishes />
-        <SceneLetter />
-      </main>
-
-      <footer className="site-footer">
-        <p>愿这份小笺，陪你走过每一个温柔的日子</p>
-      </footer>
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <h1 style={{ color: '#2f2a24', fontSize: '36px' }}>风起小笺</h1>
+      <p style={{ color: '#6f6253', fontSize: '16px', lineHeight: '1.8' }}>
+        测试页面 - 如果你看到这段文字，说明 React 应用正在运行！
+      </p>
     </div>
   )
 }
