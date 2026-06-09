@@ -2,9 +2,31 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#f6efe1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>风起小笺</title>
     <style>
+        @font-face {
+            font-family: "ZhaoMengfu";
+            src: url("./assets/font/zhaomengfu.woff2") format("woff2");
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --paper: #f6efe1;
+            --paper-light: #fbf7ee;
+            --ink: #2f2a24;
+            --ink-soft: #6f6253;
+            --gold: #b8914b;
+            --green: #8f9f7a;
+            --mist-blue: #b9c8c1;
+            --warm-light: #e8c982;
+            --seal-red: #b65a3c;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,15 +38,117 @@
             height: 100%;
             overflow: hidden;
             background: #1a1510;
-            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* Loading Screen */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--paper);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loading.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-title {
+            font-family: "ZhaoMengfu", "STKaiti", "KaiTi", serif;
+            font-size: 42px;
+            color: var(--ink);
+            margin-bottom: 16px;
+            letter-spacing: 8px;
+        }
+
+        .loading-sub {
+            font-size: 14px;
+            color: var(--ink-soft);
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+        }
+
+        .loading-dog {
+            width: 80px;
+            height: 60px;
+            position: relative;
+        }
+
+        .loading-dog-body {
+            width: 50px;
+            height: 35px;
+            background: #f5f0e8;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            left: 15px;
+        }
+
+        .loading-dog-head {
+            width: 30px;
+            height: 28px;
+            background: #f5f0e8;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 20px;
+            right: 5px;
+        }
+
+        .loading-dog-ear {
+            width: 12px;
+            height: 16px;
+            background: #e8e0d0;
+            border-radius: 50%;
+            position: absolute;
+            top: -5px;
+            right: 0;
+        }
+
+        .loading-dog-tail {
+            width: 20px;
+            height: 8px;
+            background: #f5f0e8;
+            border-radius: 10px;
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            transform-origin: right center;
+            animation: tailWag 0.4s ease-in-out infinite alternate;
+        }
+
+        @keyframes tailWag {
+            from { transform: rotate(-15deg); }
+            to { transform: rotate(15deg); }
+        }
+
+        .loading-envelope {
+            width: 25px;
+            height: 18px;
+            background: var(--gold);
+            border-radius: 2px;
+            position: absolute;
+            bottom: 25px;
+            right: 10px;
+        }
+
+        /* App Container */
         .app {
             width: 100%;
             height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
+            background: #1a1510;
         }
 
         .canvas {
@@ -35,6 +159,7 @@
             overflow: hidden;
         }
 
+        /* Screen Base */
         .screen {
             position: absolute;
             top: 0;
@@ -58,26 +183,55 @@
             display: block;
         }
 
-        /* 交互区域 */
+        /* Hitbox Base */
         .hitbox {
             position: absolute;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
+            transition: transform 0.3s ease;
         }
 
-        /* Screen 1: 印章 */
+        .hitbox:active {
+            transform: scale(0.97);
+        }
+
+        /* Music Button */
+        .music-btn {
+            position: absolute;
+            right: 30px;
+            top: 40px;
+            width: 120px;
+            height: 45px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--ink-soft);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(184,145,75,0.2);
+        }
+
+        .music-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ====== Screen 1: 启封 ====== */
         .seal-hitbox {
             left: 420px;
             top: 1245px;
             width: 260px;
             height: 280px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,180,80,0.2) 0%, transparent 70%);
-            transition: all 0.3s ease;
+            background: radial-gradient(circle, rgba(255,180,80,0.15) 0%, transparent 70%);
         }
 
         .seal-hitbox:hover {
-            background: radial-gradient(circle, rgba(255,180,80,0.4) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,180,80,0.3) 0%, transparent 70%);
         }
 
         .seal-hitbox.glowing {
@@ -86,22 +240,22 @@
 
         @keyframes sealGlow {
             0% {
-                background: radial-gradient(circle, rgba(255,180,80,0.3) 0%, transparent 70%);
+                background: radial-gradient(circle, rgba(255,180,80,0.2) 0%, transparent 70%);
                 box-shadow: 0 0 0 rgba(255,180,80,0);
             }
             50% {
-                background: radial-gradient(circle, rgba(255,200,100,0.6) 0%, transparent 70%);
-                box-shadow: 0 0 60px rgba(255,200,100,0.6);
+                background: radial-gradient(circle, rgba(255,200,100,0.5) 0%, transparent 70%);
+                box-shadow: 0 0 60px rgba(255,200,100,0.5);
             }
             100% {
-                background: radial-gradient(circle, rgba(255,220,150,0.8) 0%, transparent 70%);
-                box-shadow: 0 0 100px rgba(255,220,150,0.8);
-                transform: scale(1.2);
+                background: radial-gradient(circle, rgba(255,220,150,0.7) 0%, transparent 70%);
+                box-shadow: 0 0 100px rgba(255,220,150,0.7);
+                transform: scale(1.3);
                 opacity: 0;
             }
         }
 
-        /* Screen 2: 湖面 + 卡片 */
+        /* ====== Screen 2: 江南 ====== */
         .water-hitbox {
             left: 100px;
             top: 1050px;
@@ -131,10 +285,12 @@
             width: 280px;
             height: 330px;
             border-radius: 12px;
-            transition: transform 0.3s ease;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
         }
 
         .card-hitbox:hover {
+            background: rgba(255,255,255,0.12);
             transform: translateY(-8px);
         }
 
@@ -142,7 +298,7 @@
         .card-2 { left: 335px; top: 1510px; }
         .card-3 { left: 630px; top: 1510px; }
 
-        /* Screen 3: 台灯 + 菜品 */
+        /* ====== Screen 3: 烟火 ====== */
         .lamp-hitbox {
             left: 700px;
             top: 650px;
@@ -153,18 +309,20 @@
         }
 
         .lamp-hitbox.on {
-            background: radial-gradient(circle, rgba(255,200,100,0.35) 0%, transparent 70%);
-            box-shadow: 0 0 80px rgba(255,200,100,0.3);
+            background: radial-gradient(circle, rgba(255,200,100,0.3) 0%, transparent 70%);
+            box-shadow: 0 0 80px rgba(255,200,100,0.25);
         }
 
         .dish-hitbox {
             width: 270px;
             height: 185px;
             border-radius: 12px;
+            background: rgba(255,255,255,0.05);
             transition: all 0.3s ease;
         }
 
         .dish-hitbox:hover {
+            background: rgba(255,255,255,0.12);
             transform: scale(1.05);
         }
 
@@ -180,27 +338,44 @@
         .dish-1 { left: 340px; top: 1480px; }
         .dish-2 { left: 620px; top: 1440px; }
 
-        /* Screen 4: 签牌 */
+        /* Food Bubble */
+        .food-bubble {
+            position: absolute;
+            left: 510px;
+            top: 1240px;
+            width: 385px;
+            height: 145px;
+            pointer-events: none;
+            animation: bubblePop 0.5s ease;
+        }
+
+        @keyframes bubblePop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ====== Screen 4: 愿望签 ====== */
         .tag-hitbox {
             width: 145px;
             height: 590px;
             border-radius: 8px;
+            background: rgba(255,255,255,0.03);
             transition: all 0.3s ease;
         }
 
         .tag-hitbox:hover {
+            background: rgba(255,255,255,0.1);
             transform: translateY(-8px);
-            background: rgba(255,255,255,0.08);
         }
 
         .tag-hitbox.active {
             animation: tagBounce 0.5s ease;
-            background: rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.15);
         }
 
         @keyframes tagBounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
+            50% { transform: translateY(-15px); }
         }
 
         .t1 { left: 80px; top: 555px; }
@@ -209,23 +384,25 @@
         .t4 { left: 620px; top: 555px; }
         .t5 { left: 800px; top: 555px; }
 
-        /* Screen 5: 按钮 */
+        /* ====== Screen 5: 收信 ====== */
         .button-hitbox {
             left: 260px;
             top: 1390px;
             width: 480px;
             height: 120px;
             border-radius: 12px;
+            background: rgba(255,255,255,0.05);
             animation: btnPulse 2s ease-in-out infinite;
         }
 
         .button-hitbox:hover {
-            transform: scale(1.05);
+            background: rgba(255,255,255,0.12);
+            transform: scale(1.03);
         }
 
         @keyframes btnPulse {
             0%, 100% { box-shadow: 0 0 0 rgba(200,160,80,0); }
-            50% { box-shadow: 0 0 30px rgba(200,160,80,0.3); }
+            50% { box-shadow: 0 0 30px rgba(200,160,80,0.25); }
         }
 
         .final-overlay {
@@ -237,14 +414,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(246,239,225,0.85);
+            background: rgba(246,239,225,0.88);
             animation: fadeIn 0.8s ease;
         }
 
         .final-overlay span {
+            font-family: "ZhaoMengfu", "STKaiti", "KaiTi", serif;
             font-size: 42px;
-            color: #2f2a24;
-            font-family: "STKaiti", "KaiTi", serif;
+            color: var(--ink);
             letter-spacing: 4px;
             animation: scaleIn 0.8s ease;
         }
@@ -259,6 +436,7 @@
             to { opacity: 1; transform: scale(1); }
         }
 
+        /* Arrow */
         .arrow-hitbox {
             left: 440px;
             top: 1920px;
@@ -272,20 +450,109 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
+
+        /* Petal Animation */
+        .petal {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(ellipse, rgba(201,160,160,0.6), transparent);
+            border-radius: 50% 0 50% 0;
+            pointer-events: none;
+            animation: petalFall linear forwards;
+        }
+
+        @keyframes petalFall {
+            0% {
+                transform: translateY(0) rotate(0deg) translateX(0);
+                opacity: 0.7;
+            }
+            25% { transform: translateY(25vh) rotate(90deg) translateX(20px); }
+            50% { transform: translateY(50vh) rotate(180deg) translateX(-15px); }
+            75% { transform: translateY(75vh) rotate(270deg) translateX(25px); }
+            100% {
+                transform: translateY(105vh) rotate(360deg) translateX(-10px);
+                opacity: 0;
+            }
+        }
+
+        /* Willow Animation */
+        .willow {
+            position: absolute;
+            width: 3px;
+            background: linear-gradient(180deg, var(--green), transparent);
+            opacity: 0.4;
+            transform-origin: top center;
+            animation: willowSway 4s ease-in-out infinite;
+        }
+
+        @keyframes willowSway {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        /* Lamp Glow Animation */
+        .lamp-glow {
+            position: absolute;
+            left: 720px;
+            top: 680px;
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(232,201,130,0.4), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: lampBreathe 3s ease-in-out infinite;
+        }
+
+        @keyframes lampBreathe {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="loading-title">风起小笺</div>
+        <div class="loading-sub">正在送达……</div>
+        <div class="loading-dog">
+            <div class="loading-dog-body"></div>
+            <div class="loading-dog-head">
+                <div class="loading-dog-ear"></div>
+            </div>
+            <div class="loading-dog-tail"></div>
+            <div class="loading-envelope"></div>
+        </div>
+    </div>
+
+    <!-- App -->
     <div class="app">
         <div class="canvas" id="canvas">
-            <!-- Screen 1 -->
+            <!-- Screen 1: 启封 -->
             <div class="screen active" id="screen1">
                 <img src="assets/screens/screen-1-bg.png" alt="" class="screen-bg">
+                <div class="music-btn" id="musicBtn1">
+                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                    音乐：关
+                </div>
                 <div class="hitbox seal-hitbox" id="sealHitbox"></div>
             </div>
 
-            <!-- Screen 2 -->
+            <!-- Screen 2: 江南 -->
             <div class="screen" id="screen2">
                 <img src="assets/screens/screen-2-bg.png" alt="" class="screen-bg">
+                <div class="music-btn">
+                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                    音乐：关
+                </div>
                 <div class="hitbox water-hitbox" id="waterHitbox"></div>
                 <div class="hitbox card-hitbox card-1"></div>
                 <div class="hitbox card-hitbox card-2"></div>
@@ -293,18 +560,35 @@
                 <div class="hitbox arrow-hitbox" data-next="3"></div>
             </div>
 
-            <!-- Screen 3 -->
+            <!-- Screen 3: 烟火 -->
             <div class="screen" id="screen3">
                 <img src="assets/screens/screen-3-bg.png" alt="" class="screen-bg">
+                <div class="music-btn">
+                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                    音乐：关
+                </div>
+                <div class="lamp-glow" id="lampGlow" style="display:none;"></div>
                 <div class="hitbox lamp-hitbox" id="lampHitbox"></div>
                 <div class="hitbox dish-hitbox dish-1" id="dish1"></div>
                 <div class="hitbox dish-hitbox dish-2" id="dish2"></div>
                 <div class="hitbox arrow-hitbox" data-next="4"></div>
             </div>
 
-            <!-- Screen 4 -->
+            <!-- Screen 4: 愿望签 -->
             <div class="screen" id="screen4">
                 <img src="assets/screens/screen-4-bg.png" alt="" class="screen-bg">
+                <div class="music-btn">
+                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                    音乐：关
+                </div>
                 <div class="hitbox tag-hitbox t1" data-tag="1"></div>
                 <div class="hitbox tag-hitbox t2" data-tag="2"></div>
                 <div class="hitbox tag-hitbox t3" data-tag="3"></div>
@@ -313,19 +597,32 @@
                 <div class="hitbox arrow-hitbox" data-next="5"></div>
             </div>
 
-            <!-- Screen 5 -->
+            <!-- Screen 5: 收信 -->
             <div class="screen" id="screen5">
                 <img src="assets/screens/screen-5-bg.png" alt="" class="screen-bg">
+                <div class="music-btn">
+                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                    音乐：关
+                </div>
                 <div class="hitbox button-hitbox" id="buttonHitbox"></div>
             </div>
         </div>
     </div>
 
+    <!-- Audio -->
+    <audio id="bgm" loop src="assets/bgm.mp3"></audio>
+
     <script>
         const CANVAS_W = 946;
         const CANVAS_H = 2048;
+        let currentScreen = 1;
+        let musicPlaying = false;
 
-        // 缩放画布
+        // Scale canvas
         function updateScale() {
             const canvas = document.getElementById('canvas');
             const vw = window.innerWidth;
@@ -340,19 +637,41 @@
         updateScale();
         window.addEventListener('resize', updateScale);
 
-        // 切换屏幕
+        // Loading
+        setTimeout(() => {
+            document.getElementById('loading').classList.add('hidden');
+        }, 2000);
+
+        // Go to screen
         function goToScreen(num) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen' + num).classList.add('active');
+            currentScreen = num;
         }
 
-        // Screen 1: 印章点击
+        // Create petal
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.style.left = Math.random() * CANVAS_W + 'px';
+            petal.style.top = '-20px';
+            petal.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            document.getElementById('screen' + currentScreen).appendChild(petal);
+            setTimeout(() => petal.remove(), 10000);
+        }
+
+        // Auto petals
+        setInterval(() => {
+            if (Math.random() > 0.6) createPetal();
+        }, 2000);
+
+        // Screen 1: Seal click
         document.getElementById('sealHitbox').addEventListener('click', function() {
             this.classList.add('glowing');
             setTimeout(() => goToScreen(2), 1200);
         });
 
-        // Screen 2: 湖面涟漪
+        // Screen 2: Water ripple
         document.getElementById('waterHitbox').addEventListener('click', function() {
             const existing = document.querySelector('.ripple-effect');
             if (existing) existing.remove();
@@ -362,12 +681,14 @@
             setTimeout(() => ripple.remove(), 1500);
         });
 
-        // Screen 3: 台灯开关
+        // Screen 3: Lamp toggle
         document.getElementById('lampHitbox').addEventListener('click', function() {
             this.classList.toggle('on');
+            const glow = document.getElementById('lampGlow');
+            glow.style.display = this.classList.contains('on') ? 'block' : 'none';
         });
 
-        // Screen 3: 菜品点击
+        // Screen 3: Dish click
         document.getElementById('dish1').addEventListener('click', function() {
             this.classList.toggle('active');
         });
@@ -375,7 +696,7 @@
             this.classList.toggle('active');
         });
 
-        // Screen 4: 签牌点击
+        // Screen 4: Tag click
         document.querySelectorAll('.tag-hitbox').forEach(tag => {
             tag.addEventListener('click', function() {
                 document.querySelectorAll('.tag-hitbox').forEach(t => t.classList.remove('active'));
@@ -383,7 +704,7 @@
             });
         });
 
-        // Screen 5: 按钮点击
+        // Screen 5: Button click
         document.getElementById('buttonHitbox').addEventListener('click', function() {
             this.style.display = 'none';
             const overlay = document.createElement('div');
@@ -392,11 +713,40 @@
             document.getElementById('screen5').appendChild(overlay);
         });
 
-        // 箭头导航
+        // Arrow navigation
         document.querySelectorAll('.arrow-hitbox').forEach(arrow => {
             arrow.addEventListener('click', function() {
                 const next = this.getAttribute('data-next');
                 if (next) goToScreen(parseInt(next));
+            });
+        });
+
+        // Music toggle
+        document.querySelectorAll('.music-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const audio = document.getElementById('bgm');
+                musicPlaying = !musicPlaying;
+                if (musicPlaying) {
+                    audio.play().catch(() => {});
+                    this.innerHTML = `
+                        <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                        音乐：开
+                    `;
+                } else {
+                    audio.pause();
+                    this.innerHTML = `
+                        <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                        音乐：关
+                    `;
+                }
             });
         });
     </script>
