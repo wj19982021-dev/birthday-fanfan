@@ -1,0 +1,821 @@
+/* ========================================
+   SceneLetter - Scene 5: 收信
+   Final scene - receiving the birthday letter
+   Warm, complete, not demanding
+   ======================================== */
+
+/* --- Keyframes --- */
+
+/* Paper entrance */
+@keyframes letter-paper-enter {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Letter text line stagger */
+@keyframes letter-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button pulse after appearing */
+@keyframes letter-btn-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes letter-btn-glow {
+  0%, 100% {
+    box-shadow: 0 2px 12px rgba(184, 145, 75, 0.15);
+  }
+  50% {
+    box-shadow: 0 2px 20px rgba(184, 145, 75, 0.3);
+  }
+}
+
+/* Final message reveal */
+@keyframes letter-final-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Final text glow pulse */
+@keyframes letter-final-glow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(184, 145, 75, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(184, 145, 75, 0.4);
+  }
+}
+
+/* Paper fade when final message appears */
+@keyframes letter-paper-fade {
+  to {
+    transform: scale(0.98);
+    filter: blur(1px) brightness(1.02);
+  }
+}
+
+/* Falling petal */
+@keyframes letter-petal-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) translateX(0) rotate(0deg);
+  }
+  10% {
+    opacity: 0.5;
+  }
+  85% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) translateX(30px) rotate(360deg);
+  }
+}
+
+/* Extra petals burst (faster, more dramatic) */
+@keyframes letter-petal-burst {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) translateX(0) rotate(0deg) scale(1.2);
+  }
+  12% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.15;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) translateX(50px) rotate(540deg) scale(0.8);
+  }
+}
+
+/* Dog entrance */
+@keyframes letter-dog-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dog idle breathing */
+@keyframes letter-dog-breathe {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Envelope subtle swing */
+@keyframes letter-envelope-swing {
+  0%, 100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+/* Warm glow overlay */
+@keyframes letter-glow-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- Scene container --- */
+
+.scene-letter {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--paper, #f6efe1);
+  font-family: 'Noto Serif SC', 'STSong', 'STKaiti', 'KaiTi', 'SimSun', serif;
+  padding: 6vh 20px 60px;
+  box-sizing: border-box;
+}
+
+/* --- Ink wash background decoration --- */
+
+.scene-letter__ink-wash {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 50%;
+  opacity: 0.06;
+}
+
+.scene-letter__ink-wash--1 {
+  width: 300px;
+  height: 300px;
+  top: -60px;
+  right: -80px;
+  background: radial-gradient(ellipse at center, #2f2a24 0%, transparent 70%);
+}
+
+.scene-letter__ink-wash--2 {
+  width: 250px;
+  height: 250px;
+  bottom: -40px;
+  left: -60px;
+  background: radial-gradient(ellipse at center, #b8914b 0%, transparent 70%);
+  opacity: 0.05;
+}
+
+/* --- Falling petals --- */
+
+.scene-letter__petals {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.scene-letter__petal {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50% 0 50% 0;
+  background: #d4a850;
+  opacity: 0;
+}
+
+.scene-letter__petal--1 {
+  left: 10%;
+  animation: letter-petal-fall 11s ease-in-out infinite 0s;
+  width: 5px;
+  height: 5px;
+}
+
+.scene-letter__petal--2 {
+  left: 28%;
+  animation: letter-petal-fall 13s ease-in-out infinite 4s;
+  width: 4px;
+  height: 4px;
+  background: #e8c060;
+}
+
+.scene-letter__petal--3 {
+  left: 52%;
+  animation: letter-petal-fall 10s ease-in-out infinite 2s;
+  width: 5px;
+  height: 5px;
+}
+
+.scene-letter__petal--4 {
+  left: 75%;
+  animation: letter-petal-fall 12s ease-in-out infinite 6s;
+  width: 4px;
+  height: 4px;
+  background: #c8a048;
+}
+
+.scene-letter__petal--5 {
+  left: 40%;
+  animation: letter-petal-fall 14s ease-in-out infinite 1s;
+  width: 5px;
+  height: 5px;
+  background: #e8c060;
+}
+
+.scene-letter__petal--6 {
+  left: 88%;
+  animation: letter-petal-fall 11s ease-in-out infinite 7s;
+  width: 4px;
+  height: 4px;
+}
+
+.scene-letter__petal--7 {
+  left: 62%;
+  animation: letter-petal-fall 12.5s ease-in-out infinite 3s;
+  width: 5px;
+  height: 5px;
+  background: #e8c060;
+}
+
+.scene-letter__petal--8 {
+  left: 18%;
+  animation: letter-petal-fall 13.5s ease-in-out infinite 9s;
+  width: 4px;
+  height: 4px;
+  background: #c8a048;
+}
+
+/* --- Burst petals (after button click) --- */
+
+.scene-letter__petals--burst .scene-letter__petal {
+  width: 7px;
+  height: 7px;
+}
+
+.scene-letter__petal--b1 {
+  left: 15%;
+  animation: letter-petal-burst 7s ease-in-out forwards 0s;
+}
+
+.scene-letter__petal--b2 {
+  left: 35%;
+  animation: letter-petal-burst 8s ease-in-out forwards 0.3s;
+  background: #e8c060;
+}
+
+.scene-letter__petal--b3 {
+  left: 55%;
+  animation: letter-petal-burst 7.5s ease-in-out forwards 0.1s;
+  width: 6px;
+  height: 6px;
+}
+
+.scene-letter__petal--b4 {
+  left: 75%;
+  animation: letter-petal-burst 8.5s ease-in-out forwards 0.5s;
+  background: #c8a048;
+  width: 8px;
+  height: 8px;
+}
+
+.scene-letter__petal--b5 {
+  left: 25%;
+  animation: letter-petal-burst 7.2s ease-in-out forwards 0.7s;
+  width: 6px;
+  height: 6px;
+  background: #e8c060;
+}
+
+.scene-letter__petal--b6 {
+  left: 65%;
+  animation: letter-petal-burst 9s ease-in-out forwards 0.2s;
+  width: 7px;
+  height: 7px;
+}
+
+/* --- Calligraphy brush decoration --- */
+
+.scene-letter__brush {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.scene-letter__brush--tl {
+  top: 40px;
+  left: 16px;
+  width: 40px;
+  height: 80px;
+  transform: rotate(-15deg);
+}
+
+/* --- Seal stamp decoration --- */
+
+.scene-letter__seal {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  bottom: 80px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  transform: rotate(8deg);
+}
+
+/* --- Osmanthus branch decorations --- */
+
+.scene-letter__osmanthus {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.scene-letter__osmanthus--1 {
+  top: 50px;
+  right: 0;
+  width: 140px;
+  height: 80px;
+}
+
+.scene-letter__osmanthus--2 {
+  bottom: 40px;
+  left: 0;
+  width: 100px;
+  height: 60px;
+}
+
+/* --- Main letter paper --- */
+
+.scene-letter__paper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(
+    180deg,
+    #fffef9 0%,
+    #fffcf5 30%,
+    #faf6ee 100%
+  );
+  border-radius: 12px;
+  padding: 40px 32px 36px;
+  box-shadow:
+    0 4px 24px rgba(47, 42, 36, 0.06),
+    0 1px 6px rgba(47, 42, 36, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.scene-letter__paper--visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.scene-letter__paper--fading {
+  animation: letter-paper-fade 1.2s ease forwards;
+  pointer-events: none;
+}
+
+/* Paper inner border */
+.scene-letter__paper-border {
+  position: absolute;
+  inset: 10px;
+  border: 0.5px solid rgba(184, 145, 75, 0.12);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* --- Dog mascot with envelope --- */
+
+.scene-letter__dog {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
+}
+
+.scene-letter__dog--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scene-letter__dog-wrap {
+  position: relative;
+  display: inline-block;
+  animation: letter-dog-breathe 4s ease-in-out infinite;
+}
+
+.scene-letter__envelope {
+  position: absolute;
+  width: 28px;
+  height: 22px;
+  bottom: 22px;
+  right: -6px;
+  transform-origin: center bottom;
+  animation: letter-envelope-swing 3s ease-in-out infinite;
+}
+
+/* --- Letter content --- */
+
+.scene-letter__content {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.scene-letter__line {
+  font-family: 'Noto Serif SC', 'STSong', 'STKaiti', 'KaiTi', 'SimSun', serif;
+  color: var(--ink, #2f2a24);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 2.2;
+  letter-spacing: 0.1em;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.scene-letter__content--visible .scene-letter__line {
+  animation: letter-line-in 0.7s ease forwards;
+  animation-delay: calc(var(--line-index) * 0.1s + 1s);
+}
+
+.scene-letter__line--highlight {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--seal-red, #b65a3c);
+  letter-spacing: 0.12em;
+}
+
+.scene-letter__gap {
+  height: 1.4em;
+}
+
+/* --- Accept button --- */
+
+.scene-letter__btn {
+  display: block;
+  margin: 0 auto;
+  padding: 12px 32px;
+  border: 1.5px solid var(--gold, #b8914b);
+  border-radius: 24px;
+  background: linear-gradient(135deg, #fffcf5 0%, #faf6ee 100%);
+  color: var(--gold, #b8914b);
+  font-family: 'Noto Serif SC', 'STSong', 'STKaiti', 'KaiTi', 'SimSun', serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  transition: opacity 0.8s ease, transform 0.8s ease, background 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+  position: relative;
+  z-index: 10;
+}
+
+.scene-letter__btn--visible {
+  animation: letter-btn-in 0.8s ease forwards 3s;
+}
+
+.scene-letter__btn--visible:not(:disabled) {
+  animation: letter-btn-in 0.8s ease forwards 3s,
+             letter-btn-glow 3s ease-in-out infinite 4s;
+}
+
+.scene-letter__btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #faf6ee 0%, #f5efe3 100%);
+  box-shadow: 0 2px 16px rgba(184, 145, 75, 0.25);
+}
+
+.scene-letter__btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.scene-letter__btn:focus-visible {
+  outline: 2px solid var(--gold, #b8914b);
+  outline-offset: 4px;
+}
+
+.scene-letter__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* --- Final reveal message --- */
+
+.scene-letter__final {
+  position: absolute;
+  z-index: 20;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(16px) scale(0.95);
+  transition: opacity 1s ease, transform 1s ease;
+  pointer-events: none;
+}
+
+.scene-letter__final--visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.scene-letter__final-text {
+  font-family: 'Noto Serif SC', 'STSong', 'STKaiti', 'KaiTi', 'SimSun', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--gold, #b8914b);
+  letter-spacing: 0.12em;
+  line-height: 1.8;
+  margin: 0;
+  animation: letter-final-glow 3s ease-in-out infinite 1.5s;
+}
+
+/* --- Warm glow overlay --- */
+
+.scene-letter__glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(184, 145, 75, 0.06) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+.scene-letter__glow--visible {
+  opacity: 1;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+
+/* Mobile */
+@media (max-width: 480px) {
+  .scene-letter {
+    padding: 5vh 16px 50px;
+  }
+
+  .scene-letter__paper {
+    padding: 32px 24px 28px;
+    max-width: 340px;
+  }
+
+  .scene-letter__line {
+    font-size: 0.88rem;
+    line-height: 2;
+  }
+
+  .scene-letter__line--highlight {
+    font-size: 1.05rem;
+  }
+
+  .scene-letter__btn {
+    font-size: 0.82rem;
+    padding: 10px 26px;
+  }
+
+  .scene-letter__final-text {
+    font-size: 1.2rem;
+  }
+
+  .scene-letter__brush--tl {
+    width: 30px;
+    height: 60px;
+    top: 24px;
+    left: 10px;
+  }
+
+  .scene-letter__seal {
+    width: 36px;
+    height: 36px;
+    bottom: 60px;
+    right: 16px;
+  }
+
+  .scene-letter__osmanthus--1 {
+    width: 100px;
+    height: 56px;
+    top: 30px;
+  }
+
+  .scene-letter__osmanthus--2 {
+    width: 70px;
+    height: 42px;
+    bottom: 30px;
+  }
+
+  .scene-letter__ink-wash--1 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .scene-letter__ink-wash--2 {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 767px) {
+  .scene-letter__paper {
+    max-width: 400px;
+    padding: 36px 28px 32px;
+  }
+
+  .scene-letter__line {
+    font-size: 0.95rem;
+  }
+
+  .scene-letter__line--highlight {
+    font-size: 1.15rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .scene-letter {
+    padding: 8vh 40px 60px;
+  }
+
+  .scene-letter__paper {
+    max-width: 460px;
+    padding: 44px 40px 40px;
+  }
+
+  .scene-letter__line {
+    font-size: 1.05rem;
+    line-height: 2.4;
+  }
+
+  .scene-letter__line--highlight {
+    font-size: 1.3rem;
+  }
+
+  .scene-letter__btn {
+    font-size: 0.95rem;
+    padding: 14px 36px;
+  }
+
+  .scene-letter__final-text {
+    font-size: 1.6rem;
+  }
+
+  .scene-letter__brush--tl {
+    top: 60px;
+    left: 24px;
+    width: 50px;
+    height: 100px;
+  }
+
+  .scene-letter__seal {
+    width: 50px;
+    height: 50px;
+    bottom: 100px;
+    right: 32px;
+  }
+
+  .scene-letter__osmanthus--1 {
+    width: 160px;
+    height: 92px;
+    top: 60px;
+  }
+
+  .scene-letter__osmanthus--2 {
+    width: 120px;
+    height: 72px;
+    bottom: 50px;
+  }
+
+  .scene-letter__ink-wash--1 {
+    width: 350px;
+    height: 350px;
+  }
+
+  .scene-letter__ink-wash--2 {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+/* ========================================
+   Reduced Motion
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-letter__paper {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .scene-letter__paper--fading {
+    animation: none;
+    opacity: 0.6;
+  }
+
+  .scene-letter__line {
+    transition: none;
+    opacity: 1;
+    transform: none;
+    animation: none !important;
+  }
+
+  .scene-letter__btn {
+    transition: none;
+    opacity: 1;
+    transform: none;
+    animation: none !important;
+  }
+
+  .scene-letter__dog {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .scene-letter__dog-wrap {
+    animation: none;
+  }
+
+  .scene-letter__envelope {
+    animation: none;
+  }
+
+  .scene-letter__final {
+    transition: none;
+  }
+
+  .scene-letter__final--visible {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .scene-letter__final-text {
+    animation: none;
+  }
+
+  .scene-letter__glow {
+    transition: none;
+  }
+
+  .scene-letter__glow--visible {
+    opacity: 1;
+  }
+
+  .scene-letter__petal {
+    display: none;
+  }
+
+  .scene-letter__petals--burst .scene-letter__petal {
+    display: none;
+  }
+}
