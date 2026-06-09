@@ -11,71 +11,49 @@
   height: 72px;
 }
 
-/* Girl figure */
-.girl {
-  left: 610px;
-  top: 520px;
-  width: 300px;
-  height: 720px;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.3s forwards;
-}
-
-/* Main text */
-.main-text {
-  left: 95px;
-  top: 380px;
-  width: 545px;
-  height: 420px;
-  opacity: 0;
-  animation: slideUp 1s ease 0.5s forwards;
-}
-
-/* Water tip */
-.water-tip {
-  left: 145px;
-  top: 960px;
-  width: 420px;
-  height: 70px;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.8s forwards, pulse 2s ease-in-out 2s infinite;
-}
-
-/* Ripple */
-.ripple {
+/* Interactive water area */
+.interactive-water {
+  position: absolute;
   left: 125px;
-  top: 1120px;
+  top: 1080px;
   width: 240px;
   height: 120px;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,164,176,0.2) 0%, transparent 70%);
+  transition: background 0.3s ease;
 }
 
-.ripple:hover {
-  transform: scale(1.05);
+.interactive-water:hover {
+  background: radial-gradient(circle, rgba(139,164,176,0.4) 0%, transparent 70%);
 }
 
-/* Ripple active */
-.ripple-active {
+/* Ripple effect */
+.ripple-effect {
+  position: absolute;
   left: 95px;
-  top: 1080px;
+  top: 1060px;
   width: 310px;
   height: 180px;
-  animation: pulse 0.5s ease-in-out;
+  border-radius: 50%;
+  border: 2px solid rgba(139,164,176,0.5);
+  animation: rippleExpand 1.5s ease-out forwards;
+  pointer-events: none;
 }
 
-/* Dog */
-.screen-2 .dog {
-  left: 430px;
-  top: 1130px;
-  width: 190px;
-  height: 180px;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.6s forwards;
+@keyframes rippleExpand {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
 }
 
-/* Cards container */
-.cards-container {
+/* Cards area */
+.cards-area {
   position: absolute;
   top: 0;
   left: 0;
@@ -84,34 +62,50 @@
   pointer-events: none;
 }
 
-/* Card */
-.card {
+/* Interactive cards */
+.interactive-card {
+  position: absolute;
   pointer-events: auto;
   cursor: pointer;
-  transition: transform 0.3s ease, filter 0.3s ease;
-  opacity: 0;
-  animation: slideUp 0.8s ease forwards;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+  transition: transform 0.3s ease, background 0.3s ease;
 }
 
-.card:nth-child(1) {
-  animation-delay: 1s;
-}
-
-.card:nth-child(2) {
-  animation-delay: 1.2s;
-}
-
-.card:nth-child(3) {
-  animation-delay: 1.4s;
-}
-
-.card:hover {
+.interactive-card:hover {
   transform: translateY(-5px);
-  filter: brightness(1.1);
+  background: rgba(255,255,255,0.2);
 }
 
-.card-active {
-  animation: pulse 0.5s ease;
+.interactive-card.active {
+  animation: cardPop 0.5s ease;
+}
+
+@keyframes cardPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.card-1 {
+  left: 40px;
+  top: 1510px;
+  width: 280px;
+  height: 330px;
+}
+
+.card-2 {
+  left: 335px;
+  top: 1510px;
+  width: 280px;
+  height: 330px;
+}
+
+.card-3 {
+  left: 630px;
+  top: 1510px;
+  width: 280px;
+  height: 330px;
 }
 
 /* Down arrow */
@@ -127,4 +121,14 @@
 
 .down-arrow:hover {
   transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }

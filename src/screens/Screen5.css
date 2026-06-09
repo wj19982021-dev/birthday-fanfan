@@ -11,52 +11,38 @@
   height: 72px;
 }
 
-/* Letter paper */
-.letter-paper {
-  left: 180px;
-  top: 555px;
-  width: 610px;
-  height: 900px;
-  opacity: 0;
-  animation: slideUp 1s ease 0.3s forwards;
-  transition: all 0.5s ease;
-}
-
-.letter-paper.received {
-  left: 170px;
-  top: 540px;
-  width: 630px;
-  height: 930px;
-}
-
-/* Main text */
-.screen-5 .main-text {
-  left: 245px;
-  top: 650px;
-  width: 520px;
-  height: 640px;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.8s forwards;
-}
-
-/* Button */
-.button {
+/* Interactive button */
+.interactive-button {
+  position: absolute;
   left: 280px;
   top: 1415px;
   width: 450px;
   height: 95px;
   cursor: pointer;
-  opacity: 0;
-  animation: fadeIn 1s ease 1s forwards, pulse 2s ease-in-out 2s infinite;
-  transition: transform 0.3s ease;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  transition: all 0.3s ease;
+  animation: pulse 2s ease-in-out 2s infinite;
 }
 
-.button:hover {
+.interactive-button:hover {
+  background: rgba(255,255,255,0.2);
   transform: scale(1.05);
 }
 
-.button.clicked {
-  animation: pulse 0.5s ease;
+.interactive-button.clicked {
+  animation: buttonPop 0.5s ease;
+}
+
+@keyframes buttonPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
 }
 
 /* Final note */
@@ -68,30 +54,7 @@
   animation: slideUp 0.8s ease;
 }
 
-/* Dog with envelope */
-.dog-envelope {
-  left: 0;
-  top: 1550px;
-  width: 310px;
-  height: 360px;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.5s forwards;
-  transition: all 0.5s ease;
-}
-
-.dog-envelope.active {
-  left: 0;
-  top: 1530px;
-  width: 330px;
-  height: 390px;
-}
-
-/* Inkstone and brush */
-.inkstone-brush {
-  left: 620px;
-  top: 1610px;
-  width: 320px;
-  height: 260px;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.7s forwards;
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }

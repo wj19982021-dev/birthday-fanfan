@@ -11,70 +11,50 @@
   height: 70px;
 }
 
-/* Main text */
-.screen-3 .main-text {
-  left: 90px;
-  top: 170px;
-  width: 520px;
-  height: 650px;
-  opacity: 0;
-  animation: slideUp 1s ease 0.3s forwards;
-}
-
-/* Dog */
-.screen-3 .dog {
-  left: 240px;
-  top: 960px;
-  width: 360px;
-  height: 260px;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.5s forwards;
-}
-
-/* Lamp */
-.lamp {
+/* Interactive lamp */
+.interactive-lamp {
+  position: absolute;
   left: 720px;
   top: 680px;
   width: 175px;
   height: 390px;
   cursor: pointer;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.6s forwards;
-  transition: transform 0.3s ease;
+  border-radius: 8px;
+  background: radial-gradient(circle, rgba(232,201,130,0.2) 0%, transparent 70%);
+  transition: all 0.3s ease;
 }
 
-.lamp:hover {
-  transform: scale(1.05);
+.interactive-lamp:hover {
+  background: radial-gradient(circle, rgba(232,201,130,0.4) 0%, transparent 70%);
 }
 
-.lamp-on {
-  left: 675px;
-  top: 620px;
-  width: 250px;
-  height: 480px;
-  animation: glow 2s ease-in-out infinite;
+.interactive-lamp.on {
+  background: radial-gradient(circle, rgba(232,201,130,0.6) 0%, transparent 70%);
+  box-shadow: 0 0 60px rgba(232,201,130,0.5);
 }
 
-/* Rice */
-.rice {
-  left: 215px;
-  top: 1345px;
-  width: 260px;
-  height: 150px;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.7s forwards;
-}
-
-/* Dish */
-.dish {
+/* Interactive dishes */
+.interactive-dish {
+  position: absolute;
   cursor: pointer;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.8s forwards;
-  transition: transform 0.3s ease;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  transition: all 0.3s ease;
 }
 
-.dish:hover {
+.interactive-dish:hover {
+  background: rgba(255,255,255,0.2);
   transform: scale(1.05);
+}
+
+.interactive-dish.active {
+  animation: dishPop 0.5s ease;
+}
+
+@keyframes dishPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
 }
 
 .dish-1 {
@@ -89,10 +69,6 @@
   top: 1460px;
   width: 295px;
   height: 220px;
-}
-
-.dish-active {
-  animation: pulse 0.5s ease;
 }
 
 /* Food bubble */
@@ -111,17 +87,7 @@
   width: 330px;
   height: 160px;
   opacity: 0;
-  animation: fadeIn 1s ease 1s forwards, pulse 2s ease-in-out 2s infinite;
-}
-
-/* Hand icon */
-.hand-icon {
-  left: 465px;
-  top: 1680px;
-  width: 90px;
-  height: 110px;
-  opacity: 0;
-  animation: fadeIn 1s ease 1.2s forwards, float 2s ease-in-out 2s infinite;
+  animation: fadeIn 1s ease 0.8s forwards, pulse 2s ease-in-out 2s infinite;
 }
 
 /* Swipe tip */
@@ -132,9 +98,24 @@
   height: 60px;
   cursor: pointer;
   opacity: 0;
-  animation: fadeIn 1s ease 1.5s forwards;
+  animation: fadeIn 1s ease 1s forwards;
 }
 
 .swipe-tip:hover {
   transform: scale(1.02);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
 }

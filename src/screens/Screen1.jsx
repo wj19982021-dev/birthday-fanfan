@@ -8,7 +8,7 @@ const Screen1 = ({ isActive, onOpen }) => {
 
   useEffect(() => {
     if (isActive) {
-      setTimeout(() => setShowContent(true), 300)
+      setTimeout(() => setShowContent(true), 500)
     }
   }, [isActive])
 
@@ -19,12 +19,12 @@ const Screen1 = ({ isActive, onOpen }) => {
 
     setTimeout(() => {
       onOpen()
-    }, 1200)
+    }, 1500)
   }
 
   return (
     <div className={`screen screen-1 ${isActive ? 'active' : ''}`}>
-      {/* Background */}
+      {/* Background - 原图背景 */}
       <img
         src="/birthday-fanfan/assets/assets/screens/screen-1-bg.png"
         alt=""
@@ -38,38 +38,15 @@ const Screen1 = ({ isActive, onOpen }) => {
         className="layer music-btn"
       />
 
-      {/* Title text */}
-      <img
-        src="/birthday-fanfan/assets/assets/layers/screen-1-title-text.png"
-        alt="小范同学，生日快乐"
-        className={`layer title-text ${showContent ? 'show' : ''}`}
-      />
-
-      {/* Open tip */}
-      <img
-        src="/birthday-fanfan/assets/assets/layers/screen-1-open-tip.png"
-        alt="轻轻点一下，拆开这份小笺"
-        className={`layer open-tip ${showContent ? 'show' : ''}`}
-      />
-
-      {/* Dog */}
-      <img
-        src="/birthday-fanfan/assets/assets/layers/screen-1-dog-normal.png"
-        alt=""
-        className={`layer dog ${showContent ? 'show' : ''}`}
-      />
-
-      {/* Seal normal */}
+      {/* 可交互：印章 */}
       {!showGlow && (
-        <img
-          src="/birthday-fanfan/assets/assets/layers/screen-1-seal-normal.png"
-          alt="印"
-          className={`layer seal ${showContent ? 'show' : ''}`}
+        <div
+          className={`interactive-seal ${showContent ? 'show' : ''}`}
           onClick={handleSealClick}
         />
       )}
 
-      {/* Seal glow */}
+      {/* 印章发光效果 */}
       {showGlow && (
         <img
           src="/birthday-fanfan/assets/assets/layers/screen-1-seal-glow.png"
@@ -78,26 +55,11 @@ const Screen1 = ({ isActive, onOpen }) => {
         />
       )}
 
-      {/* Decorative elements */}
+      {/* 提示文字 */}
       <img
-        src="/birthday-fanfan/assets/assets/layers/screen-1-brushes.png"
-        alt=""
-        className={`layer brushes ${showContent ? 'show' : ''}`}
-      />
-      <img
-        src="/birthday-fanfan/assets/assets/layers/screen-1-inkstone.png"
-        alt=""
-        className={`layer inkstone ${showContent ? 'show' : ''}`}
-      />
-      <img
-        src="/birthday-fanfan/assets/assets/layers/screen-1-scroll.png"
-        alt=""
-        className={`layer scroll ${showContent ? 'show' : ''}`}
-      />
-      <img
-        src="/birthday-fanfan/assets/assets/layers/screen-1-calligraphy-paper.png"
-        alt=""
-        className={`layer calligraphy-paper ${showContent ? 'show' : ''}`}
+        src="/birthday-fanfan/assets/assets/layers/screen-1-open-tip.png"
+        alt="轻轻点一下，拆开这份小笺"
+        className={`layer open-tip ${showContent ? 'show' : ''}`}
       />
 
       {/* Petals overlay */}
