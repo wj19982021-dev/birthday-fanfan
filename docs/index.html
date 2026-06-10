@@ -82,13 +82,19 @@
             text-align: center; animation: fadeUp 1s ease 0.5s both;
             position: relative; z-index: 1;
         }
-        .p1-title .name { font-size: 20px; color: var(--ink-soft); letter-spacing: 4px; }
+        .p1-title .name {
+            font-size: 32px; color: var(--ink); letter-spacing: 6px;
+            font-family: "STKaiti", "KaiTi", "Songti SC", serif;
+        }
         .p1-title .date {
             font-size: 13px; color: var(--ink-soft); letter-spacing: 2px;
-            margin-top: 8px; opacity: 0.8;
+            margin-top: 12px; opacity: 0.8;
         }
         .p1-title .date .lunar { font-size: 14px; color: var(--gold); }
-        .p1-title h1 { font-size: 48px; color: var(--ink); letter-spacing: 6px; margin: 12px 0; font-weight: 900; }
+        .p1-title h1 {
+            font-size: 48px; color: var(--ink); letter-spacing: 6px; margin: 16px 0; font-weight: 900;
+            font-family: "STKaiti", "KaiTi", "Songti SC", serif;
+        }
         .p1-title .wish { font-size: 15px; color: var(--ink-soft); line-height: 2; letter-spacing: 2px; margin-top: 24px; }
         .p1-seal {
             width: 64px; height: 64px; border: 3px solid var(--seal-red); border-radius: 8px;
@@ -424,6 +430,10 @@
             currentPage = n;
             document.getElementById('pages').style.transform = `translateY(-${n * 100}vh)`;
             if (n === 1) animateCards();
+            // 关闭最终弹窗
+            if (n === 0) {
+                document.getElementById('p5Final').classList.remove('show');
+            }
         }
 
         // Seal click
@@ -513,6 +523,7 @@
         document.addEventListener('touchend', (e) => {
             const diff = touchStartY - e.changedTouches[0].clientY;
             if (diff > 50) {
+                // 上滑 = 下一页
                 startMusic();
                 if (currentPage === 0) {
                     const seal = document.querySelector('.p1-seal');
@@ -520,14 +531,19 @@
                 } else {
                     goToPage(currentPage + 1);
                 }
+            } else if (diff < -50) {
+                // 下滑 = 上一页
+                if (currentPage > 0) goToPage(currentPage - 1);
             }
         }, { passive: true });
 
-        // PC端鼠标上滑
+        // PC端鼠标
         let mouseStartY = 0;
         document.addEventListener('mousedown', (e) => { mouseStartY = e.clientY; });
         document.addEventListener('mouseup', (e) => {
-            if (mouseStartY - e.clientY > 50) {
+            const diff = mouseStartY - e.clientY;
+            if (diff > 50) {
+                // 上滑 = 下一页
                 startMusic();
                 if (currentPage === 0) {
                     const seal = document.querySelector('.p1-seal');
@@ -535,6 +551,9 @@
                 } else {
                     goToPage(currentPage + 1);
                 }
+            } else if (diff < -50) {
+                // 下滑 = 上一页
+                if (currentPage > 0) goToPage(currentPage - 1);
             }
         });
 
