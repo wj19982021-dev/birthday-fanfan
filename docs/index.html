@@ -251,6 +251,10 @@
         .p4-tag.active { transform: translateY(-12px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
         .p4-tag .icon { font-size: 22px; margin-bottom: 10px; }
         .p4-tag .label { font-size: 10px; color: var(--ink-soft); writing-mode: vertical-rl; letter-spacing: 2px; }
+        .p4-tag .click-hint {
+            position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+            font-size: 9px; color: var(--gold); opacity: 0.7; white-space: nowrap;
+        }
         .p4-result {
             background: rgba(255,255,255,0.85); backdrop-filter: blur(10px);
             border-radius: 16px; padding: 24px; text-align: center; width: 100%;
@@ -386,11 +390,11 @@
         <div class="page p4" id="page4">
             <div class="p4-title"><h2>愿你新的一岁，<br>心想事成，万事顺意。</h2></div>
             <div class="p4-tags">
-                <div class="p4-tag" onclick="selectTag(0,this)"><div class="icon">🍚</div><div class="label">好好吃饭</div></div>
-                <div class="p4-tag" onclick="selectTag(1,this)"><div class="icon">😴</div><div class="label">多睡好觉</div></div>
-                <div class="p4-tag" onclick="selectTag(2,this)"><div class="icon">☁️</div><div class="label">少些焦虑</div></div>
-                <div class="p4-tag" onclick="selectTag(3,this)"><div class="icon">🎊</div><div class="label">喜乐暴富</div></div>
-                <div class="p4-tag" onclick="selectTag(4,this)"><div class="icon">🌸</div><div class="label">做自己</div></div>
+                <div class="p4-tag" onclick="selectTag(0,this)"><div class="icon">🍚</div><div class="label">好好吃饭</div><div class="click-hint">点击</div></div>
+                <div class="p4-tag" onclick="selectTag(1,this)"><div class="icon">😴</div><div class="label">多睡好觉</div><div class="click-hint">点击</div></div>
+                <div class="p4-tag" onclick="selectTag(2,this)"><div class="icon">☁️</div><div class="label">少些焦虑</div><div class="click-hint">点击</div></div>
+                <div class="p4-tag" onclick="selectTag(3,this)"><div class="icon">🎊</div><div class="label">喜乐暴富</div><div class="click-hint">点击</div></div>
+                <div class="p4-tag" onclick="selectTag(4,this)"><div class="icon">🌸</div><div class="label">做自己</div><div class="click-hint">点击</div></div>
             </div>
             <div class="p4-result" id="p4Result"><div class="p4-default">轻轻点一枚愿望签</div></div>
             <div class="p4-hint">↑ 向上滑动继续</div>
@@ -430,8 +434,15 @@
             currentPage = n;
             document.getElementById('pages').style.transform = `translateY(-${n * 100}vh)`;
             if (n === 1) animateCards();
-            // 关闭最终弹窗
+            // 回到首页时重置印章
             if (n === 0) {
+                const seal = document.querySelector('.p1-seal');
+                if (seal) {
+                    seal.classList.remove('glow');
+                    seal.style.opacity = '1';
+                    seal.style.transform = 'scale(1)';
+                    seal.style.boxShadow = 'none';
+                }
                 document.getElementById('p5Final').classList.remove('show');
             }
         }
